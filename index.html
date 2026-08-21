@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gracefield Montessori School | Portal</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -33,10 +36,16 @@
   </script>
 
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-outfit { font-family: 'Outfit', sans-serif; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .font-outfit {
+      font-family: 'Outfit', sans-serif;
+    }
   </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
   <!-- TOP HEADER -->
@@ -48,17 +57,19 @@
         </div>
         <div>
           <h1 class="font-outfit font-bold text-xl tracking-tight text-slate-900 leading-none">
-            Gracefield Montessori School
+            Gracefield Montessori Schoolz
           </h1>
           <p class="text-[11px] text-slate-500 font-medium mt-1">12 Gracefield Avenue, Lekki, Lagos, Nigeria</p>
         </div>
       </div>
 
       <div id="header-user-status" class="hidden items-center gap-3">
-        <span id="active-user-badge" class="bg-brand-50 text-brand-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-brand-100">
+        <span id="active-user-badge"
+          class="bg-brand-50 text-brand-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-brand-100">
           Role: Admin
         </span>
-        <button onclick="logout()" class="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100 transition">
+        <button onclick="logout()"
+          class="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100 transition">
           <i class="fa-solid fa-right-from-bracket mr-1"></i> Log Out
         </button>
       </div>
@@ -70,56 +81,74 @@
     <!-- LANDING PAGE & ROLE SELECTION -->
     <section id="view-landing" class="portal-view space-y-8 py-8 text-center max-w-4xl mx-auto w-full">
       <div class="space-y-3">
-        <span class="bg-brand-100 text-brand-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">Official School Gateway</span>
-        <h2 class="font-outfit text-4xl font-extrabold text-slate-900 tracking-tight">Welcome to Gracefield Montessori School</h2>
+        <span
+          class="bg-brand-100 text-brand-700 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">Official
+          School Gateway</span>
+        <h2 class="font-outfit text-4xl font-extrabold text-slate-900 tracking-tight">Welcome to Gracefield Montessori
+          School</h2>
         <p class="text-sm text-slate-600 max-w-2xl mx-auto">Select your portal role below to sign into your account.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
-        <div onclick="openLoginModal('admin')" class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-brand-600 transition cursor-pointer group text-center space-y-4">
-          <div class="w-16 h-16 bg-brand-50 text-brand-700 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-brand-700 group-hover:text-white transition">
+        <div onclick="openLoginModal('admin')"
+          class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-brand-600 transition cursor-pointer group text-center space-y-4">
+          <div
+            class="w-16 h-16 bg-brand-50 text-brand-700 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-brand-700 group-hover:text-white transition">
             <i class="fa-solid fa-user-shield text-2xl"></i>
           </div>
           <div>
             <h3 class="font-outfit font-bold text-lg text-slate-900">Administrator</h3>
             <p class="text-xs text-slate-500 mt-1">Manage staff, classes, fee overrides, inventory & excursions</p>
           </div>
-          <span class="inline-block text-xs font-bold text-brand-700 group-hover:translate-x-1 transition-transform">Login to Portal &rarr;</span>
+          <span
+            class="inline-block text-xs font-bold text-brand-700 group-hover:translate-x-1 transition-transform">Login
+            to Portal &rarr;</span>
         </div>
 
-        <div onclick="openLoginModal('teacher')" class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-brand-600 transition cursor-pointer group text-center space-y-4">
-          <div class="w-16 h-16 bg-purple-50 text-purple-700 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-purple-700 group-hover:text-white transition">
+        <div onclick="openLoginModal('teacher')"
+          class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-brand-600 transition cursor-pointer group text-center space-y-4">
+          <div
+            class="w-16 h-16 bg-purple-50 text-purple-700 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-purple-700 group-hover:text-white transition">
             <i class="fa-solid fa-chalkboard-user text-2xl"></i>
           </div>
           <div>
             <h3 class="font-outfit font-bold text-lg text-slate-900">Staff / Teacher</h3>
             <p class="text-xs text-slate-500 mt-1">Gradebooks, subjects, scheme of work & student registration</p>
           </div>
-          <span class="inline-block text-xs font-bold text-purple-700 group-hover:translate-x-1 transition-transform">Login to Portal &rarr;</span>
+          <span
+            class="inline-block text-xs font-bold text-purple-700 group-hover:translate-x-1 transition-transform">Login
+            to Portal &rarr;</span>
         </div>
 
-        <div onclick="openLoginModal('parent')" class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-emerald-600 transition cursor-pointer group text-center space-y-4">
-          <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-emerald-600 group-hover:text-white transition">
+        <div onclick="openLoginModal('parent')"
+          class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-emerald-600 transition cursor-pointer group text-center space-y-4">
+          <div
+            class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto group-hover:bg-emerald-600 group-hover:text-white transition">
             <i class="fa-solid fa-house-user text-2xl"></i>
           </div>
           <div>
             <h3 class="font-outfit font-bold text-lg text-slate-900">Parent Portal</h3>
             <p class="text-xs text-slate-500 mt-1">View results, pay fees in installments & track completion %</p>
           </div>
-          <span class="inline-block text-xs font-bold text-emerald-600 group-hover:translate-x-1 transition-transform">Login to Portal &rarr;</span>
+          <span
+            class="inline-block text-xs font-bold text-emerald-600 group-hover:translate-x-1 transition-transform">Login
+            to Portal &rarr;</span>
         </div>
       </div>
     </section>
 
     <!-- LOGIN MODAL -->
-    <div id="login-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div id="login-modal"
+      class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
       <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5 relative">
         <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
 
         <div class="space-y-1">
-          <span id="login-role-badge" class="text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-700 px-2.5 py-0.5 rounded-md">Admin Login</span>
+          <span id="login-role-badge"
+            class="text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-700 px-2.5 py-0.5 rounded-md">Admin
+            Login</span>
           <h3 class="font-outfit text-xl font-bold text-slate-900">Sign in to your Account</h3>
           <p class="text-xs text-slate-500">Enter your credentials to access the portal.</p>
         </div>
@@ -127,16 +156,19 @@
         <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
           <div>
             <label class="text-xs font-semibold text-slate-700">Username / Email</label>
-            <input type="text" id="login-username" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+            <input type="text" id="login-username" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
           </div>
           <div>
             <label class="text-xs font-semibold text-slate-700">Password</label>
-            <input type="password" id="login-password" required value="password123" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+            <input type="password" id="login-password" required value="password123"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
           </div>
 
           <div id="teacher-class-field" class="hidden">
             <label class="text-xs font-semibold text-slate-700">Allocated Teaching Class *</label>
-            <select id="login-allocated-class" class="w-full bg-brand-50/50 border border-brand-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-brand-900 outline-none focus:ring-2 focus:ring-brand-700">
+            <select id="login-allocated-class"
+              class="w-full bg-brand-50/50 border border-brand-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-brand-900 outline-none focus:ring-2 focus:ring-brand-700">
               <option value="Kindergarten 1">Kindergarten 1</option>
               <option value="Grade 1 Alpha">Grade 1 Alpha</option>
               <option value="Grade 3B" selected>Grade 3B</option>
@@ -144,7 +176,8 @@
             </select>
           </div>
 
-          <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white text-xs py-3 rounded-xl font-semibold transition shadow-sm">
+          <button type="submit"
+            class="w-full bg-brand-700 hover:bg-brand-800 text-white text-xs py-3 rounded-xl font-semibold transition shadow-sm">
             Access Portal
           </button>
         </form>
@@ -153,7 +186,7 @@
 
     <!-- 1. ADMIN DASHBOARD VIEW -->
     <section id="view-admin" class="portal-view space-y-6 hidden">
-      
+
       <!-- ADMIN METRICS -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
@@ -168,14 +201,16 @@
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Active Staff</p>
             <p id="admin-staff-count" class="text-2xl font-bold font-outfit text-slate-800 mt-1">2 Personnel</p>
           </div>
-          <div class="bg-purple-50 p-3 rounded-xl text-purple-700"><i class="fa-solid fa-chalkboard-user text-lg"></i></div>
+          <div class="bg-purple-50 p-3 rounded-xl text-purple-700"><i class="fa-solid fa-chalkboard-user text-lg"></i>
+          </div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
           <div>
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Inventory Value</p>
             <p id="admin-inventory-value" class="text-2xl font-bold font-outfit text-emerald-600 mt-1">₦2,450,000</p>
           </div>
-          <div class="bg-emerald-50 p-3 rounded-xl text-emerald-600"><i class="fa-solid fa-boxes-stacked text-lg"></i></div>
+          <div class="bg-emerald-50 p-3 rounded-xl text-emerald-600"><i class="fa-solid fa-boxes-stacked text-lg"></i>
+          </div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
           <div>
@@ -187,20 +222,26 @@
       </div>
 
       <!-- ADMIN SUB-TABS -->
-      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-2 flex flex-wrap gap-2 text-xs font-semibold">
-        <button onclick="switchAdminTab('classes')" id="atab-classes" class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all bg-brand-50 text-brand-700 font-bold">
+      <div
+        class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-2 flex flex-wrap gap-2 text-xs font-semibold">
+        <button onclick="switchAdminTab('classes')" id="atab-classes"
+          class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all bg-brand-50 text-brand-700 font-bold">
           <i class="fa-solid fa-school-circle-check mr-1.5"></i> Classes & Allocation
         </button>
-        <button onclick="switchAdminTab('discounts')" id="atab-discounts" class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchAdminTab('discounts')" id="atab-discounts"
+          class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
           <i class="fa-solid fa-calculator mr-1.5"></i> Dynamic Fee Overrides & Completion %
         </button>
-        <button onclick="switchAdminTab('staff')" id="atab-staff" class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchAdminTab('staff')" id="atab-staff"
+          class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
           <i class="fa-solid fa-users-gear mr-1.5"></i> Staff Directory
         </button>
-        <button onclick="switchAdminTab('inventory')" id="atab-inventory" class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchAdminTab('inventory')" id="atab-inventory"
+          class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
           <i class="fa-solid fa-warehouse mr-1.5"></i> Inventory Tracker
         </button>
-        <button onclick="switchAdminTab('activities')" id="atab-activities" class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchAdminTab('activities')" id="atab-activities"
+          class="admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
           <i class="fa-solid fa-calendar-day mr-1.5"></i> Activities & Excursions
         </button>
       </div>
@@ -210,9 +251,11 @@
         <div class="flex justify-between items-center border-b pb-3">
           <div>
             <h2 class="font-outfit text-lg font-bold text-slate-900">Class Management & Teacher Allocation</h2>
-            <p class="text-xs text-slate-500">Add classes across Kindergarten through Grade 6 and allocate lead teachers.</p>
+            <p class="text-xs text-slate-500">Add classes across Kindergarten through Grade 6 and allocate lead
+              teachers.</p>
           </div>
-          <button onclick="addClassPrompt()" class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
+          <button onclick="addClassPrompt()"
+            class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
             <i class="fa-solid fa-plus"></i> Add New Class
           </button>
         </div>
@@ -237,38 +280,45 @@
       <!-- ADMIN TAB 2: DYNAMIC OVERRIDES & LEDGER -->
       <div id="admin-content-discounts" class="space-y-6 hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
           <!-- Dynamic Outstanding Override Form -->
           <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
             <div class="border-b pb-2">
               <h3 class="font-outfit text-base font-bold text-slate-900">Dynamic Outstanding Balance Override</h3>
-              <p class="text-[11px] text-slate-500">Adjust the remaining balance directly at any point to recalculate payment completeness.</p>
+              <p class="text-[11px] text-slate-500">Adjust the remaining balance directly at any point to recalculate
+                payment completeness.</p>
             </div>
-            
+
             <form onsubmit="handleAdminOverrideSubmit(event)" class="space-y-4">
               <div>
                 <label class="text-xs font-semibold text-slate-700">Select Student Account *</label>
-                <select id="admin-override-student" onchange="previewStudentOverrideInfo(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <select id="admin-override-student" onchange="previewStudentOverrideInfo(this.value)"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
                   <!-- Dynamic -->
                 </select>
               </div>
 
               <!-- Student Summary Preview -->
-              <div id="override-student-summary" class="p-3 bg-brand-50/50 rounded-xl border border-brand-100 text-xs space-y-1 font-mono">
+              <div id="override-student-summary"
+                class="p-3 bg-brand-50/50 rounded-xl border border-brand-100 text-xs space-y-1 font-mono">
                 <!-- Dynamic -->
               </div>
 
               <div>
                 <label class="text-xs font-semibold text-slate-700">New Target Outstanding Balance (₦) *</label>
-                <input type="number" id="admin-override-amount" required placeholder="e.g. 40000 or 0" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <input type="number" id="admin-override-amount" required placeholder="e.g. 40000 or 0"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
               </div>
 
               <div>
                 <label class="text-xs font-semibold text-slate-700">Reason for Override / Agreement Note *</label>
-                <input type="text" id="admin-override-reason" required placeholder="e.g. Agreed partial payment discount with parent" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <input type="text" id="admin-override-reason" required
+                  placeholder="e.g. Agreed partial payment discount with parent"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
               </div>
 
-              <button type="submit" class="w-full bg-brand-700 hover:bg-brand-800 text-white text-xs py-2.5 rounded-xl font-semibold transition">
+              <button type="submit"
+                class="w-full bg-brand-700 hover:bg-brand-800 text-white text-xs py-2.5 rounded-xl font-semibold transition">
                 Apply Dynamic Override
               </button>
             </form>
@@ -278,21 +328,25 @@
           <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
             <div class="border-b pb-2">
               <h3 class="font-outfit text-base font-bold text-slate-900">Record Manual Payment Transaction</h3>
-              <p class="text-[11px] text-slate-500">Record cash/transfer payments which immediately decrease current outstanding balance.</p>
+              <p class="text-[11px] text-slate-500">Record cash/transfer payments which immediately decrease current
+                outstanding balance.</p>
             </div>
 
             <form onsubmit="handleAdminRecordPayment(event)" class="space-y-4">
               <div>
                 <label class="text-xs font-semibold text-slate-700">Select Student Account *</label>
-                <select id="admin-pay-student" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <select id="admin-pay-student"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
                   <!-- Dynamic -->
                 </select>
               </div>
               <div>
                 <label class="text-xs font-semibold text-slate-700">Amount Received (₦) *</label>
-                <input type="number" id="admin-pay-amount" required placeholder="e.g. 50000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <input type="number" id="admin-pay-amount" required placeholder="e.g. 50000"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
               </div>
-              <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-2.5 rounded-xl font-semibold transition">
+              <button type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-2.5 rounded-xl font-semibold transition">
                 Record Payment
               </button>
             </form>
@@ -302,7 +356,8 @@
 
         <!-- Student Accounts Financial Ledger -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
-          <h3 class="font-outfit text-base font-bold text-slate-900 border-b pb-3">Dynamic Fee Ledger & Completion Status</h3>
+          <h3 class="font-outfit text-base font-bold text-slate-900 border-b pb-3">Dynamic Fee Ledger & Completion
+            Status</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead>
@@ -325,13 +380,15 @@
       </div>
 
       <!-- ADMIN TAB 3: STAFF DIRECTORY -->
-      <div id="admin-content-staff" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 hidden">
+      <div id="admin-content-staff"
+        class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 hidden">
         <div class="flex justify-between items-center border-b pb-3">
           <div>
             <h2 class="font-outfit text-lg font-bold text-slate-900">Academic & Non-Academic Staff Directory</h2>
             <p class="text-xs text-slate-500">Manage teaching roles, contact records, and credentials.</p>
           </div>
-          <button onclick="addStaffPrompt()" class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
+          <button onclick="addStaffPrompt()"
+            class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
             <i class="fa-solid fa-plus"></i> Add New Staff
           </button>
         </div>
@@ -353,13 +410,16 @@
       </div>
 
       <!-- ADMIN TAB 4: INVENTORY RECORDS -->
-      <div id="admin-content-inventory" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 hidden">
+      <div id="admin-content-inventory"
+        class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 hidden">
         <div class="flex justify-between items-center border-b pb-3">
           <div>
             <h2 class="font-outfit text-lg font-bold text-slate-900">Inventory & Resource Tracker</h2>
-            <p class="text-xs text-slate-500">Monitor stock levels for stationery, uniforms, cardigans, and textbooks.</p>
+            <p class="text-xs text-slate-500">Monitor stock levels for stationery, uniforms, cardigans, and textbooks.
+            </p>
           </div>
-          <button onclick="addInventoryPrompt()" class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
+          <button onclick="addInventoryPrompt()"
+            class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
             <i class="fa-solid fa-plus"></i> Add Item
           </button>
         </div>
@@ -381,13 +441,15 @@
       </div>
 
       <!-- ADMIN TAB 5: ACTIVITIES & EXCURSIONS -->
-      <div id="admin-content-activities" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 hidden">
+      <div id="admin-content-activities"
+        class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 hidden">
         <div class="flex justify-between items-center border-b pb-3">
           <div>
             <h2 class="font-outfit text-lg font-bold text-slate-900">Extracurricular Activities & Excursions</h2>
             <p class="text-xs text-slate-500">Schedule field trips, inter-house sports, and school activities.</p>
           </div>
-          <button onclick="addActivityPrompt()" class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
+          <button onclick="addActivityPrompt()"
+            class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
             <i class="fa-solid fa-plus"></i> Schedule Event
           </button>
         </div>
@@ -412,27 +474,34 @@
 
     <!-- 2. TEACHER DASHBOARD VIEW -->
     <section id="view-teacher" class="portal-view hidden space-y-6">
-      
-      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-2 flex flex-wrap gap-2 text-xs font-semibold">
-        <button onclick="switchTeacherTab('curriculum')" id="ttab-curriculum" class="teacher-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all bg-brand-50 text-brand-700 font-bold">
+
+      <div
+        class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-2 flex flex-wrap gap-2 text-xs font-semibold">
+        <button onclick="switchTeacherTab('curriculum')" id="ttab-curriculum"
+          class="teacher-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all bg-brand-50 text-brand-700 font-bold">
           <i class="fa-solid fa-book-open mr-1.5"></i> Subjects & Scheme of Work
         </button>
-        <button onclick="switchTeacherTab('enrollment')" id="ttab-enrollment" class="teacher-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchTeacherTab('enrollment')" id="ttab-enrollment"
+          class="teacher-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
           <i class="fa-solid fa-user-plus mr-1.5"></i> Register Parents & Wards
         </button>
-        <button onclick="switchTeacherTab('scores')" id="ttab-scores" class="teacher-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
+        <button onclick="switchTeacherTab('scores')" id="ttab-scores"
+          class="teacher-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900">
           <i class="fa-solid fa-pen-to-square mr-1.5"></i> Continuous Assessment Gradebook
         </button>
       </div>
 
       <!-- TEACHER TAB 1: SUBJECTS & SCHEME OF WORK -->
-      <div id="teacher-content-curriculum" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+      <div id="teacher-content-curriculum"
+        class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
         <div class="flex justify-between items-center border-b pb-3">
           <div>
             <h2 class="font-outfit text-xl font-bold text-slate-900">Subjects & Scheme of Work</h2>
-            <p class="text-xs text-slate-500">Manage subjects and input weekly schemes of work for <span id="teacher-active-class-title" class="font-bold text-brand-700">Grade 3B</span>.</p>
+            <p class="text-xs text-slate-500">Manage subjects and input weekly schemes of work for <span
+                id="teacher-active-class-title" class="font-bold text-brand-700">Grade 3B</span>.</p>
           </div>
-          <button onclick="addSubjectPrompt()" class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
+          <button onclick="addSubjectPrompt()"
+            class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-4 py-2 rounded-xl font-semibold transition shadow-sm flex items-center gap-1.5">
             <i class="fa-solid fa-plus"></i> Add Subject
           </button>
         </div>
@@ -443,7 +512,8 @@
       </div>
 
       <!-- TEACHER TAB 2: ENROLLMENT OF PARENTS AND WARDS -->
-      <div id="teacher-content-enrollment" class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5 hidden">
+      <div id="teacher-content-enrollment"
+        class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5 hidden">
         <div class="border-b pb-3">
           <h2 class="font-outfit text-xl font-bold text-slate-900">Register Parents & Wards</h2>
           <p class="text-xs text-slate-500 mt-0.5">Register new students under your assigned class roster.</p>
@@ -451,17 +521,22 @@
 
         <form onsubmit="handleStudentEnrollment(event)" class="space-y-6">
           <div class="space-y-3">
-            <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Parent / Household Association</label>
+            <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">1. Parent / Household
+              Association</label>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label class="flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer bg-slate-50 border-brand-200">
-                <input type="radio" name="parentMode" value="existing" checked onchange="toggleParentFormMode(this.value)" class="text-brand-700 focus:ring-brand-700">
+              <label
+                class="flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer bg-slate-50 border-brand-200">
+                <input type="radio" name="parentMode" value="existing" checked
+                  onchange="toggleParentFormMode(this.value)" class="text-brand-700 focus:ring-brand-700">
                 <div>
                   <p class="text-xs font-bold text-slate-800">Attach to Existing Parent Profile</p>
                   <p class="text-[11px] text-slate-500">Assign multiple children under an existing parent</p>
                 </div>
               </label>
-              <label class="flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer bg-slate-50 border-slate-200">
-                <input type="radio" name="parentMode" value="new" onchange="toggleParentFormMode(this.value)" class="text-brand-700 focus:ring-brand-700">
+              <label
+                class="flex items-center gap-3 p-3.5 border rounded-xl cursor-pointer bg-slate-50 border-slate-200">
+                <input type="radio" name="parentMode" value="new" onchange="toggleParentFormMode(this.value)"
+                  class="text-brand-700 focus:ring-brand-700">
                 <div>
                   <p class="text-xs font-bold text-slate-800">Create New Parent Record</p>
                   <p class="text-[11px] text-slate-500">Register a brand new household profile</p>
@@ -472,19 +547,23 @@
 
           <div id="existing-parent-group" class="space-y-1.5">
             <label class="text-xs font-semibold text-slate-600">Select Existing Family Household</label>
-            <select id="enroll-parent-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+            <select id="enroll-parent-select"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
               <!-- Dynamic -->
             </select>
           </div>
 
-          <div id="new-parent-group" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden bg-brand-50/40 p-4 rounded-xl border border-brand-100">
+          <div id="new-parent-group"
+            class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden bg-brand-50/40 p-4 rounded-xl border border-brand-100">
             <div>
               <label class="text-xs font-semibold text-slate-600">Parent Full Name *</label>
-              <input type="text" id="new-parent-name" placeholder="e.g. Dr. Emeka Okafor" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+              <input type="text" id="new-parent-name" placeholder="e.g. Dr. Emeka Okafor"
+                class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
             </div>
             <div>
               <label class="text-xs font-semibold text-slate-600">Parent Phone Number *</label>
-              <input type="tel" id="new-parent-phone" placeholder="e.g. 08066222892" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+              <input type="tel" id="new-parent-phone" placeholder="e.g. 08066222892"
+                class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
             </div>
           </div>
 
@@ -493,11 +572,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label class="text-xs font-semibold text-slate-600">Child Full Name *</label>
-                <input type="text" id="enroll-student-name" required placeholder="e.g. Abigail Okafor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <input type="text" id="enroll-student-name" required placeholder="e.g. Abigail Okafor"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
               </div>
               <div>
                 <label class="text-xs font-semibold text-slate-600">Class Grade *</label>
-                <select id="enroll-student-grade" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <select id="enroll-student-grade" required
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
                   <option value="Kindergarten 1">Kindergarten 1</option>
                   <option value="Grade 1 Alpha">Grade 1 Alpha</option>
                   <option value="Grade 3B" selected>Grade 3B</option>
@@ -506,13 +587,15 @@
               </div>
               <div>
                 <label class="text-xs font-semibold text-slate-600">Default Tuition Fee (₦) *</label>
-                <input type="number" id="enroll-student-fee" required value="100000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+                <input type="number" id="enroll-student-fee" required value="100000"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
               </div>
             </div>
           </div>
 
           <div class="flex justify-end pt-2">
-            <button type="submit" class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-6 py-2.5 rounded-xl font-semibold transition shadow-sm flex items-center gap-2">
+            <button type="submit"
+              class="bg-brand-700 hover:bg-brand-800 text-white text-xs px-6 py-2.5 rounded-xl font-semibold transition shadow-sm flex items-center gap-2">
               <i class="fa-solid fa-user-check"></i> Register Student
             </button>
           </div>
@@ -521,12 +604,15 @@
 
       <!-- TEACHER TAB 3: GRADEBOOK & SCORES -->
       <div id="teacher-content-scores" class="space-y-6 hidden">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap justify-between items-center gap-4">
+        <div
+          class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap justify-between items-center gap-4">
           <div>
             <h2 class="font-outfit text-xl font-bold text-slate-900">Continuous Assessment Gradebook</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Input assessment test, project, and exam scores for students in your class.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Input assessment test, project, and exam scores for students in
+              your class.</p>
           </div>
-          <button onclick="saveGradebook()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2.5 rounded-xl font-semibold transition flex items-center gap-2 shadow-sm">
+          <button onclick="saveGradebook()"
+            class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-2.5 rounded-xl font-semibold transition flex items-center gap-2 shadow-sm">
             <i class="fa-solid fa-floppy-disk"></i> Save Scores
           </button>
         </div>
@@ -556,19 +642,23 @@
 
     <!-- 3. PARENT DASHBOARD VIEW -->
     <section id="view-parent" class="portal-view space-y-6 hidden">
-      
+
       <!-- CHILD SWITCHER HEADER -->
-      <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap justify-between items-center gap-4">
+      <div
+        class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-wrap justify-between items-center gap-4">
         <div>
           <span class="text-xs font-semibold text-brand-700 uppercase tracking-wider">Active Child Report</span>
           <h2 id="parent-child-name" class="font-outfit text-2xl font-bold text-slate-900 mt-0.5">Abigail Okafor</h2>
-          <p class="text-xs text-slate-500">Grade: <span id="parent-child-grade" class="font-semibold text-slate-700">Grade 3B</span> | Student ID: <span id="parent-child-id" class="font-mono">STU-2026-001</span></p>
+          <p class="text-xs text-slate-500">Grade: <span id="parent-child-grade"
+              class="font-semibold text-slate-700">Grade 3B</span> | Student ID: <span id="parent-child-id"
+              class="font-mono">STU-2026-001</span></p>
         </div>
 
         <div class="flex items-center space-x-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
           <i class="fa-solid fa-users text-slate-500 text-xs"></i>
           <span class="text-xs font-semibold text-slate-600">Switch Ward:</span>
-          <select id="child-selector" onchange="switchChild(this.value)" class="bg-white border border-slate-200 text-xs font-bold rounded-lg px-3 py-1.5 text-slate-800 outline-none cursor-pointer">
+          <select id="child-selector" onchange="switchChild(this.value)"
+            class="bg-white border border-slate-200 text-xs font-bold rounded-lg px-3 py-1.5 text-slate-800 outline-none cursor-pointer">
             <!-- Dynamically populated -->
           </select>
         </div>
@@ -601,7 +691,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
           <h3 class="font-outfit font-bold text-slate-800 border-b pb-3">Dynamic Fee & Completion Status</h3>
-          
+
           <!-- Completeness Progress Bar -->
           <div class="space-y-1.5 bg-brand-50/60 p-3.5 rounded-xl border border-brand-100">
             <div class="flex justify-between items-center text-xs font-bold">
@@ -609,7 +699,8 @@
               <span id="parent-completion-pct" class="text-brand-700 font-mono text-sm">0%</span>
             </div>
             <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
-              <div id="parent-completion-bar" class="bg-brand-700 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+              <div id="parent-completion-bar" class="bg-brand-700 h-3 rounded-full transition-all duration-500"
+                style="width: 0%"></div>
             </div>
           </div>
 
@@ -633,10 +724,12 @@
               <p class="text-xs text-slate-400">Current Outstanding Balance</p>
               <p id="fee-final-balance" class="text-2xl font-bold font-mono text-rose-600">₦0</p>
             </div>
-            <span id="parent-status-badge" class="bg-amber-100 text-amber-700 font-bold text-xs px-3 py-1 rounded-full">Outstanding</span>
+            <span id="parent-status-badge"
+              class="bg-amber-100 text-amber-700 font-bold text-xs px-3 py-1 rounded-full">Outstanding</span>
           </div>
 
-          <div id="parent-override-note" class="text-[11px] text-slate-500 italic hidden bg-amber-50 p-2.5 rounded-lg border border-amber-200">
+          <div id="parent-override-note"
+            class="text-[11px] text-slate-500 italic hidden bg-amber-50 p-2.5 rounded-lg border border-amber-200">
             * Note: <span id="parent-override-reason-text"></span>
           </div>
         </div>
@@ -644,14 +737,17 @@
         <!-- INSTALLMENT PAYMENT FORM -->
         <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
           <h3 class="font-outfit font-bold text-slate-800 border-b pb-3">Pay Fees in Installments</h3>
-          <p class="text-xs text-slate-500">Payments directly reduce your outstanding balance and recalculate your completion percentage.</p>
-          
+          <p class="text-xs text-slate-500">Payments directly reduce your outstanding balance and recalculate your
+            completion percentage.</p>
+
           <form onsubmit="handleParentInstallmentPayment(event)" class="space-y-4">
             <div>
               <label class="text-xs font-semibold text-slate-700">Installment Payment Amount (₦) *</label>
-              <input type="number" id="parent-installment-input" required placeholder="e.g. 30000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+              <input type="number" id="parent-installment-input" required placeholder="e.g. 30000"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
             </div>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-3 rounded-xl font-semibold transition shadow-sm flex items-center justify-center gap-2">
+            <button type="submit"
+              class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs py-3 rounded-xl font-semibold transition shadow-sm flex items-center justify-center gap-2">
               <i class="fa-solid fa-credit-card"></i> Process Installment Payment
             </button>
           </form>
@@ -774,12 +870,12 @@
     function handleLoginSubmit(e) {
       e.preventDefault();
       closeLoginModal();
-      
+
       document.querySelectorAll('.portal-view').forEach(el => el.classList.add('hidden'));
       document.getElementById(`view-${selectedRole}`).classList.remove('hidden');
 
       const userBadge = document.getElementById('active-user-badge');
-      
+
       if (selectedRole === 'teacher') {
         activeTeacherClass = document.getElementById('login-allocated-class').value;
         userBadge.textContent = `Role: Teacher (${activeTeacherClass})`;
@@ -816,7 +912,7 @@
         btn.className = 'admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all text-slate-600 hover:text-slate-900';
       });
       document.getElementById(`atab-${tab}`).className = 'admin-tab-btn flex-1 py-2.5 px-4 rounded-xl transition-all bg-brand-50 text-brand-700 font-bold';
-      
+
       if (tab === 'staff') renderAdminStaff();
       if (tab === 'inventory') renderAdminInventory();
       if (tab === 'activities') renderAdminActivities();
@@ -913,7 +1009,7 @@
 
       const m = calculateFeeMetrics(student);
       alert(`Outstanding for ${student.name} updated to ₦${newOutstanding.toLocaleString()}.\nNew Effective Total: ₦${m.effectiveTotal.toLocaleString()}\nNew Completion: ${m.completionPct}%`);
-      
+
       previewStudentOverrideInfo(studentId);
       renderAdminLedger();
     }
@@ -1070,7 +1166,7 @@
     function renderTeacherCurriculum() {
       const list = document.getElementById('curriculum-list');
       list.innerHTML = '';
-      
+
       const filtered = subjectsDatabase.filter(s => s.classAssigned === activeTeacherClass);
 
       if (filtered.length === 0) {
@@ -1130,7 +1226,7 @@
       const studentName = document.getElementById('enroll-student-name').value;
       const grade = document.getElementById('enroll-student-grade').value;
       const tuitionFee = Number(document.getElementById('enroll-student-fee').value);
-      
+
       let parentId = mode === 'new' ? `PAR-00${Object.keys(familyDatabase).length + 1}` : document.getElementById('enroll-parent-select').value;
 
       if (mode === 'new') {
@@ -1166,7 +1262,7 @@
     function renderGradebook() {
       const tbody = document.getElementById('gradebook-tbody');
       tbody.innerHTML = '';
-      
+
       Object.keys(studentDatabase).forEach(id => {
         const s = studentDatabase[id];
         if (s.grade === activeTeacherClass) {
@@ -1285,4 +1381,5 @@
     updateParentDropdown();
   </script>
 </body>
+
 </html>
