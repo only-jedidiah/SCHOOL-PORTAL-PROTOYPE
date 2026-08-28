@@ -7,7 +7,16 @@ import { Input } from '@/components/atoms/Input/Input';
 import { Select } from '@/components/atoms/Select/Select';
 import { Button } from '@/components/atoms/Button/Button';
 import { Badge } from '@/components/atoms/Badge/Badge';
-import { Lock, Mail, KeyRound, AlertTriangle, CheckCircle2, ArrowLeft } from 'lucide-react';
+import {
+  Lock,
+  Mail,
+  KeyRound,
+  AlertTriangle,
+  CheckCircle2,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
 
 export interface LoginModalProps {
   isOpen: boolean;
@@ -28,6 +37,11 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const [password, setPassword] = useState('1234567890');
   const [teacherClass, setTeacherClass] = useState('Grade 3B');
   
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   // New password state for individual user setup
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -40,6 +54,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     setNewPassword('');
     setConfirmPassword('');
     setPassword('1234567890');
+    setShowPassword(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
 
     if (initialRole === 'admin') {
       setUsername('admin@gracefield.edu.ng');
@@ -170,11 +187,21 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
             <FormField label="Password" required hint="Default generic password: 1234567890">
               <Input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 leftIcon={<Lock size={16} />}
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(prev => !prev)}
+                    className="text-text-muted hover:text-brand-700 focus:outline-none p-1 rounded transition"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                }
                 placeholder="••••••••"
               />
             </FormField>
@@ -223,11 +250,21 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
             <FormField label="New Personal Password" required hint="Minimum 6 characters (cannot be 1234567890)">
               <Input
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 required
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
                 leftIcon={<Lock size={16} />}
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(prev => !prev)}
+                    className="text-text-muted hover:text-brand-700 focus:outline-none p-1 rounded transition"
+                    title={showNewPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                }
                 placeholder="Enter new private password"
                 autoFocus
               />
@@ -235,11 +272,21 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
             <FormField label="Confirm New Password" required hint="Re-enter your new password">
               <Input
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 required
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
                 leftIcon={<CheckCircle2 size={16} />}
+                rightElement={
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(prev => !prev)}
+                    className="text-text-muted hover:text-brand-700 focus:outline-none p-1 rounded transition"
+                    title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                }
                 placeholder="Confirm new private password"
               />
             </FormField>
