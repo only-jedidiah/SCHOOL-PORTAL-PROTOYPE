@@ -9,7 +9,6 @@ import { useSchoolPortal } from '@/context/SchoolPortalContext';
 export type ActionModalType =
   | 'add-class'
   | 'add-staff'
-  | 'add-inventory'
   | 'add-activity'
   | 'add-subject';
 
@@ -22,7 +21,6 @@ export const ActionModal: React.FC<ActionModalProps> = ({ type, onClose }) => {
   const {
     addClass,
     addStaff,
-    addInventory,
     addActivity,
     addSubject,
     activeTeacherClass,
@@ -36,12 +34,6 @@ export const ActionModal: React.FC<ActionModalProps> = ({ type, onClose }) => {
   const [staffName, setStaffName] = useState('');
   const [staffRole, setStaffRole] = useState('Lead Teacher');
   const [staffPhone, setStaffPhone] = useState('');
-
-  // Add Inventory State
-  const [itemDesc, setItemDesc] = useState('');
-  const [itemCat, setItemCat] = useState('Stationery');
-  const [itemPrice, setItemPrice] = useState('10000');
-  const [itemQty, setItemQty] = useState('20');
 
   // Add Activity State
   const [actName, setActName] = useState('');
@@ -66,11 +58,6 @@ export const ActionModal: React.FC<ActionModalProps> = ({ type, onClose }) => {
         addStaff(staffName, staffRole, staffPhone);
         setStaffName('');
         setStaffPhone('');
-      }
-    } else if (type === 'add-inventory') {
-      if (itemDesc) {
-        addInventory(itemDesc, itemCat, Number(itemPrice) || 0, Number(itemQty) || 0);
-        setItemDesc('');
       }
     } else if (type === 'add-activity') {
       if (actName) {
@@ -100,11 +87,6 @@ export const ActionModal: React.FC<ActionModalProps> = ({ type, onClose }) => {
       title: 'Add New Staff Member',
       subtitle: 'Register new academic or administrative staff in the directory.',
       submitLabel: 'Add Staff Member',
-    },
-    'add-inventory': {
-      title: 'Add Inventory Item',
-      subtitle: 'Record stock of stationery, uniforms, or textbooks.',
-      submitLabel: 'Save Item',
     },
     'add-activity': {
       title: 'Schedule School Event / Excursion',
@@ -182,50 +164,6 @@ export const ActionModal: React.FC<ActionModalProps> = ({ type, onClose }) => {
                 onChange={e => setStaffPhone(e.target.value)}
               />
             </FormField>
-          </>
-        )}
-
-        {type === 'add-inventory' && (
-          <>
-            <FormField label="Item Description" required>
-              <Input
-                required
-                placeholder="e.g. Montessori Sandpaper Letters"
-                value={itemDesc}
-                onChange={e => setItemDesc(e.target.value)}
-              />
-            </FormField>
-            <FormField label="Category" required>
-              <Select
-                value={itemCat}
-                onChange={e => setItemCat(e.target.value)}
-              >
-                <option value="Apparel">Apparel / Uniforms</option>
-                <option value="Books">Books & Curricula</option>
-                <option value="Stationery">Stationery & Art</option>
-                <option value="Montessori Gear">Montessori Apparatus</option>
-              </Select>
-            </FormField>
-            <div className="grid grid-cols-2 gap-4">
-              <FormField label="Unit Price (₦)" required>
-                <Input
-                  type="number"
-                  isMono
-                  required
-                  value={itemPrice}
-                  onChange={e => setItemPrice(e.target.value)}
-                />
-              </FormField>
-              <FormField label="Quantity in Stock" required>
-                <Input
-                  type="number"
-                  isMono
-                  required
-                  value={itemQty}
-                  onChange={e => setItemQty(e.target.value)}
-                />
-              </FormField>
-            </div>
           </>
         )}
 

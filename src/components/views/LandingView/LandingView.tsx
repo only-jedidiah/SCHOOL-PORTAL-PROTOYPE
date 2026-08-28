@@ -64,7 +64,7 @@ export const LandingView: React.FC = () => {
               Administrator
             </Typography>
             <Typography variant="caption" className="mt-1 block text-text-secondary">
-              Manage staff, classes, dynamic fee overrides, inventory & excursions
+              Manage staff, classes, dynamic fee overrides & school excursions
             </Typography>
           </div>
           <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-brand-700 group-hover:translate-x-1 transition-transform">

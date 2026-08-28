@@ -1,9 +1,8 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import {
   UserRole,
   SchoolClass,
   StaffMember,
-  InventoryItem,
   ActivityEvent,
   SubjectCurriculum,
   FamilyRecord,
@@ -11,6 +10,8 @@ import {
   FeeMetrics,
   ToastMessage,
 } from '@/types/portal';
+import { supabaseService } from '@/services/supabaseService';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
 interface EnrollStudentData {
   mode: 'existing' | 'new';
@@ -28,11 +29,11 @@ interface SchoolPortalContextType {
   activeTeacherClass: string;
   activeChildId: string;
   isLoading: boolean;
+  isSupabaseConnected: boolean;
   
   // Data stores
   classes: SchoolClass[];
   staff: StaffMember[];
-  inventory: InventoryItem[];
   activities: ActivityEvent[];
   subjects: SubjectCurriculum[];
   families: Record<string, FamilyRecord>;
@@ -54,7 +55,6 @@ interface SchoolPortalContextType {
   applyFeeOverride: (studentId: string, newOutstanding: number, reason: string) => void;
   recordAdminPayment: (studentId: string, amount: number) => void;
   addStaff: (name: string, role: string, phone?: string) => void;
-  addInventory: (description: string, category: string, price: number, qty: number) => void;
   addActivity: (name: string, classes: string, date: string) => void;
 
   // Teacher actions
@@ -81,12 +81,6 @@ const initialClasses: SchoolClass[] = [
 const initialStaff: StaffMember[] = [
   { id: 'STF-001', name: 'Mrs. Sarah Adebayo', role: 'Lead Teacher', phone: '08031112233', status: 'Active' },
   { id: 'STF-002', name: 'Mr. David Okon', role: 'Assistant Teacher', phone: '08052223344', status: 'Active' },
-];
-
-const initialInventory: InventoryItem[] = [
-  { id: 'INV-001', description: 'School Uniform (Pair)', category: 'Apparel', price: 16000, qty: 45 },
-  { id: 'INV-002', description: 'School Cardigan', category: 'Apparel', price: 13000, qty: 12 },
-  { id: 'INV-003', description: 'Montessori Math Textbooks', category: 'Books', price: 8500, qty: 80 },
 ];
 
 const initialActivities: ActivityEvent[] = [
@@ -156,22 +150,202 @@ const initialStudents: Record<string, StudentAccount> = {
   },
 };
 
+const STORAGE_KEYS = {
+  ROLE: 'school_portal_current_role',
+  TEACHER_CLASS: 'school_portal_teacher_class',
+  CHILD_ID: 'school_portal_active_child_id',
+  CLASSES: 'school_portal_classes',
+  STAFF: 'school_portal_staff',
+  ACTIVITIES: 'school_portal_activities',
+  SUBJECTS: 'school_portal_subjects',
+  FAMILIES: 'school_portal_families',
+  STUDENTS: 'school_portal_students',
+};
+
 const SchoolPortalContext = createContext<SchoolPortalContextType | undefined>(undefined);
 
 export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentRole, setCurrentRole] = useState<UserRole | null>(null);
-  const [activeTeacherClass, setActiveTeacherClass] = useState<string>('Grade 3B');
-  const [activeChildId, setActiveChildId] = useState<string>('STU-2026-001');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentRole, setCurrentRole] = useState<UserRole | null>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ROLE);
+      return (saved === 'admin' || saved === 'teacher' || saved === 'parent') ? (saved as UserRole) : null;
+    } catch {
+      return null;
+    }
+  });
 
-  const [classes, setClasses] = useState<SchoolClass[]>(initialClasses);
-  const [staff, setStaff] = useState<StaffMember[]>(initialStaff);
-  const [inventory, setInventory] = useState<InventoryItem[]>(initialInventory);
-  const [activities, setActivities] = useState<ActivityEvent[]>(initialActivities);
-  const [subjects, setSubjects] = useState<SubjectCurriculum[]>(initialSubjects);
-  const [families, setFamilies] = useState<Record<string, FamilyRecord>>(initialFamilies);
-  const [students, setStudents] = useState<Record<string, StudentAccount>>(initialStudents);
+  const [activeTeacherClass, setActiveTeacherClass] = useState<string>(() => {
+    try {
+      return localStorage.getItem(STORAGE_KEYS.TEACHER_CLASS) || 'Grade 3B';
+    } catch {
+      return 'Grade 3B';
+    }
+  });
+
+  const [activeChildId, setActiveChildId] = useState<string>(() => {
+    try {
+      return localStorage.getItem(STORAGE_KEYS.CHILD_ID) || 'STU-2026-001';
+    } catch {
+      return 'STU-2026-001';
+    }
+  });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSupabaseConnected, setIsSupabaseConnected] = useState<boolean>(isSupabaseConfigured);
+
+  const [classes, setClasses] = useState<SchoolClass[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.CLASSES);
+      return saved ? JSON.parse(saved) : initialClasses;
+    } catch {
+      return initialClasses;
+    }
+  });
+
+  const [staff, setStaff] = useState<StaffMember[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.STAFF);
+      return saved ? JSON.parse(saved) : initialStaff;
+    } catch {
+      return initialStaff;
+    }
+  });
+
+  const [activities, setActivities] = useState<ActivityEvent[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.ACTIVITIES);
+      return saved ? JSON.parse(saved) : initialActivities;
+    } catch {
+      return initialActivities;
+    }
+  });
+
+  const [subjects, setSubjects] = useState<SubjectCurriculum[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.SUBJECTS);
+      return saved ? JSON.parse(saved) : initialSubjects;
+    } catch {
+      return initialSubjects;
+    }
+  });
+
+  const [families, setFamilies] = useState<Record<string, FamilyRecord>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.FAMILIES);
+      return saved ? JSON.parse(saved) : initialFamilies;
+    } catch {
+      return initialFamilies;
+    }
+  });
+
+  const [students, setStudents] = useState<Record<string, StudentAccount>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.STUDENTS);
+      return saved ? JSON.parse(saved) : initialStudents;
+    } catch {
+      return initialStudents;
+    }
+  });
+
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Sync state changes to localStorage
+  useEffect(() => {
+    try {
+      if (currentRole) {
+        localStorage.setItem(STORAGE_KEYS.ROLE, currentRole);
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.ROLE);
+      }
+    } catch {
+      // Ignore localStorage write issues
+    }
+  }, [currentRole]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.TEACHER_CLASS, activeTeacherClass);
+    } catch {}
+  }, [activeTeacherClass]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.CHILD_ID, activeChildId);
+    } catch {}
+  }, [activeChildId]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.CLASSES, JSON.stringify(classes));
+    } catch {}
+  }, [classes]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.STAFF, JSON.stringify(staff));
+    } catch {}
+  }, [staff]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.ACTIVITIES, JSON.stringify(activities));
+    } catch {}
+  }, [activities]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.SUBJECTS, JSON.stringify(subjects));
+    } catch {}
+  }, [subjects]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.FAMILIES, JSON.stringify(families));
+    } catch {}
+  }, [families]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    } catch {}
+  }, [students]);
+
+  // Load from Supabase if configured
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
+    const loadSupabaseData = async () => {
+      try {
+        const [clsData, stfData, actData, subData, famData, stuData] = await Promise.all([
+          supabaseService.getClasses(),
+          supabaseService.getStaff(),
+          supabaseService.getActivities(),
+          supabaseService.getSubjects(),
+          supabaseService.getFamilies(),
+          supabaseService.getStudents(),
+        ]);
+
+        if (clsData && clsData.length > 0) setClasses(clsData);
+        if (stfData && stfData.length > 0) setStaff(stfData);
+        if (actData && actData.length > 0) setActivities(actData);
+        if (subData && subData.length > 0) setSubjects(subData);
+        if (famData && Object.keys(famData).length > 0) setFamilies(famData);
+        if (stuData && Object.keys(stuData).length > 0) {
+          setStudents(stuData);
+          const firstStuId = Object.keys(stuData)[0];
+          if (firstStuId && !localStorage.getItem(STORAGE_KEYS.CHILD_ID)) {
+            setActiveChildId(firstStuId);
+          }
+        }
+        setIsSupabaseConnected(true);
+      } catch (err) {
+        console.error('Failed to sync with Supabase:', err);
+        setIsSupabaseConnected(false);
+      }
+    };
+
+    loadSupabaseData();
+  }, []);
 
   // Fee calculation helper
   const calculateFeeMetrics = (student: StudentAccount): FeeMetrics => {
@@ -195,11 +369,16 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setIsLoading(true);
     if (teacherClass) {
       setActiveTeacherClass(teacherClass);
+      try {
+        localStorage.setItem(STORAGE_KEYS.TEACHER_CLASS, teacherClass);
+      } catch {}
     }
     setCurrentRole(role);
+    try {
+      localStorage.setItem(STORAGE_KEYS.ROLE, role);
+    } catch {}
     showToast('success', `Signed in successfully`, `Logged into the ${role.toUpperCase()} Portal`);
     
-    // Simulate brief preloading shimmer for smooth skeleton demonstration
     setTimeout(() => {
       setIsLoading(false);
     }, 450);
@@ -208,6 +387,9 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const logout = () => {
     setIsLoading(true);
     setCurrentRole(null);
+    try {
+      localStorage.removeItem(STORAGE_KEYS.ROLE);
+    } catch {}
     showToast('info', 'Logged Out', 'You have been safely signed out.');
     setTimeout(() => {
       setIsLoading(false);
@@ -219,6 +401,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const newId = `CLS-${String(classes.length + 1).padStart(3, '0')}`;
     const newClass: SchoolClass = { id: newId, name, levelRange, teacher: 'Unassigned' };
     setClasses(prev => [...prev, newClass]);
+    supabaseService.addClass(newClass);
     showToast('success', 'Class Added', `Successfully created ${name}`);
   };
 
@@ -226,6 +409,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setClasses(prev =>
       prev.map(c => (c.id === classId ? { ...c, teacher: teacherName } : c))
     );
+    supabaseService.updateClassTeacher(classId, teacherName);
     showToast('success', 'Teacher Allocated', `Updated class allocation to ${teacherName}`);
   };
 
@@ -242,24 +426,25 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         },
       };
     });
+    supabaseService.updateStudentFeeOverride(studentId, Math.max(0, newOutstanding), reason);
     showToast('success', 'Fee Override Applied', `Updated outstanding balance to ₦${newOutstanding.toLocaleString()}`);
   };
 
   const recordAdminPayment = (studentId: string, amount: number) => {
-    setStudents(prev => {
-      const current = prev[studentId];
-      if (!current) return prev;
-      const newPaid = current.paidAmount + amount;
-      const newOutstanding = Math.max(0, current.manualOutstanding - amount);
-      return {
-        ...prev,
-        [studentId]: {
-          ...current,
-          paidAmount: newPaid,
-          manualOutstanding: newOutstanding,
-        },
-      };
-    });
+    const current = students[studentId];
+    if (!current) return;
+    const newPaid = current.paidAmount + amount;
+    const newOutstanding = Math.max(0, current.manualOutstanding - amount);
+
+    setStudents(prev => ({
+      ...prev,
+      [studentId]: {
+        ...current,
+        paidAmount: newPaid,
+        manualOutstanding: newOutstanding,
+      },
+    }));
+    supabaseService.updateStudentPayment(studentId, newPaid, newOutstanding);
     showToast('success', 'Payment Recorded', `Successfully logged ₦${amount.toLocaleString()} received.`);
   };
 
@@ -268,20 +453,15 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const genPhone = phone || `080${Math.floor(10000000 + Math.random() * 90000000)}`;
     const newMember: StaffMember = { id: newId, name, role, phone: genPhone, status: 'Active' };
     setStaff(prev => [...prev, newMember]);
+    supabaseService.addStaff(newMember);
     showToast('success', 'Staff Member Added', `${name} added as ${role}`);
-  };
-
-  const addInventory = (description: string, category: string, price: number, qty: number) => {
-    const newId = `INV-${String(inventory.length + 1).padStart(3, '0')}`;
-    const newItem: InventoryItem = { id: newId, description, category: category || 'General', price, qty };
-    setInventory(prev => [...prev, newItem]);
-    showToast('success', 'Inventory Updated', `Added ${description} (${qty} units)`);
   };
 
   const addActivity = (name: string, targetClasses: string, date: string) => {
     const newId = `ACT-${String(activities.length + 1).padStart(3, '0')}`;
     const newAct: ActivityEvent = { id: newId, name, classes: targetClasses, date: date || 'TBD', status: 'Scheduled' };
     setActivities(prev => [...prev, newAct]);
+    supabaseService.addActivity(newAct);
     showToast('success', 'Activity Scheduled', `Created event: ${name}`);
   };
 
@@ -295,6 +475,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
       curriculum: 'Week 1: Scheme of work topic introduction\nWeek 2: Practical exercises & review',
     };
     setSubjects(prev => [...prev, newSub]);
+    supabaseService.addSubject(newSub);
     showToast('success', 'Subject Added', `${name} created for ${classAssigned}`);
   };
 
@@ -302,6 +483,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setSubjects(prev =>
       prev.map(s => (s.id === subjectId ? { ...s, curriculum: newCurriculum } : s))
     );
+    supabaseService.updateSubjectCurriculum(subjectId, newCurriculum);
     showToast('success', 'Curriculum Saved', 'Scheme of work successfully updated.');
   };
 
@@ -317,6 +499,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         childrenIds: [],
       };
       setFamilies(prev => ({ ...prev, [finalParentId!]: newFam }));
+      supabaseService.addFamily(newFam);
     }
 
     if (!finalParentId) {
@@ -345,6 +528,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
 
     setStudents(prev => ({ ...prev, [newStudentId]: newStudent }));
+    supabaseService.addStudent(newStudent);
 
     setFamilies(prev => {
       const fam = prev[finalParentId!];
@@ -381,6 +565,8 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         remark,
       }));
 
+      supabaseService.updateStudentGradeScores(studentId, field, value, total, remark);
+
       return {
         ...prev,
         [studentId]: {
@@ -397,20 +583,19 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     const child = students[activeChildId];
     if (!child) return false;
 
-    setStudents(prev => {
-      const current = prev[activeChildId];
-      const newPaid = current.paidAmount + amount;
-      const newOutstanding = Math.max(0, current.manualOutstanding - amount);
-      return {
-        ...prev,
-        [activeChildId]: {
-          ...current,
-          paidAmount: newPaid,
-          manualOutstanding: newOutstanding,
-        },
-      };
-    });
+    const newPaid = child.paidAmount + amount;
+    const newOutstanding = Math.max(0, child.manualOutstanding - amount);
 
+    setStudents(prev => ({
+      ...prev,
+      [activeChildId]: {
+        ...child,
+        paidAmount: newPaid,
+        manualOutstanding: newOutstanding,
+      },
+    }));
+
+    supabaseService.updateStudentPayment(activeChildId, newPaid, newOutstanding);
     showToast('success', 'Payment Successful', `Installment of ₦${amount.toLocaleString()} processed for ${child.name}.`);
     return true;
   };
@@ -422,9 +607,9 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         activeTeacherClass,
         activeChildId,
         isLoading,
+        isSupabaseConnected,
         classes,
         staff,
-        inventory,
         activities,
         subjects,
         families,
@@ -440,7 +625,6 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         applyFeeOverride,
         recordAdminPayment,
         addStaff,
-        addInventory,
         addActivity,
         addSubject,
         updateCurriculum,

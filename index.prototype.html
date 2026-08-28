@@ -59,7 +59,7 @@
           <h1 class="font-outfit font-bold text-xl tracking-tight text-slate-900 leading-none">
             Gracefield Montessori School
           </h1>
-          <p class="text-[11px] text-slate-500 font-medium mt-1">12 Gracefield Avenue, Lekki, Lagos, Nigeria</p>
+          <p class="text-[11px] text-slate-500 font-medium mt-1">HOUSE 8, 12 CRESENT KADO ESTATE, PHASE 1, ABUJA.</p>
         </div>
       </div>
 
@@ -835,6 +835,9 @@
 
     // NAVIGATION & LOGIN FLOW
     function showLandingPage() {
+      try {
+        localStorage.removeItem('school_proto_role');
+      } catch (e) {}
       document.querySelectorAll('.portal-view').forEach(el => el.classList.add('hidden'));
       document.getElementById('view-landing').classList.remove('hidden');
       document.getElementById('header-user-status').classList.add('hidden');
@@ -880,9 +883,16 @@
         activeTeacherClass = document.getElementById('login-allocated-class').value;
         userBadge.textContent = `Role: Teacher (${activeTeacherClass})`;
         document.getElementById('teacher-active-class-title').textContent = activeTeacherClass;
+        try {
+          localStorage.setItem('school_proto_teacher_class', activeTeacherClass);
+        } catch (err) {}
       } else {
         userBadge.textContent = `Role: ${selectedRole.toUpperCase()}`;
       }
+
+      try {
+        localStorage.setItem('school_proto_role', selectedRole);
+      } catch (err) {}
 
       document.getElementById('header-user-status').classList.remove('hidden');
 
@@ -900,6 +910,9 @@
 
     // ADMIN MANAGEMENT
     function switchAdminTab(tab) {
+      try {
+        localStorage.setItem('school_proto_admin_tab', tab);
+      } catch (e) {}
       document.getElementById('admin-content-classes').classList.add('hidden');
       document.getElementById('admin-content-discounts').classList.add('hidden');
       document.getElementById('admin-content-staff').classList.add('hidden');
@@ -1147,6 +1160,9 @@
 
     // TEACHER CURRICULUM & SUBJECTS
     function switchTeacherTab(tab) {
+      try {
+        localStorage.setItem('school_proto_teacher_tab', tab);
+      } catch (e) {}
       document.getElementById('teacher-content-curriculum').classList.add('hidden');
       document.getElementById('teacher-content-enrollment').classList.add('hidden');
       document.getElementById('teacher-content-scores').classList.add('hidden');
@@ -1306,11 +1322,15 @@
 
     function switchChild(id) {
       activeChildId = id;
+      try {
+        localStorage.setItem('school_proto_child_id', id);
+      } catch (e) {}
       renderActiveChildView();
     }
 
     function renderActiveChildView() {
       const child = studentDatabase[activeChildId];
+      if (!child) return;
       document.getElementById('parent-child-name').textContent = child.name;
       document.getElementById('parent-child-grade').textContent = child.grade;
       document.getElementById('parent-child-id').textContent = child.id;
@@ -1377,11 +1397,55 @@
       renderActiveChildView();
     }
 
-    // INITIALIZATION
-    updateParentDropdown();
+    // INITIALIZATION & SESSION RESTORATION
+    function init() {
+      updateParentDropdown();
+
+      try {
+        const savedRole = localStorage.getItem('school_proto_role');
+        if (savedRole && ['admin', 'teacher', 'parent'].includes(savedRole)) {
+          selectedRole = savedRole;
+          document.querySelectorAll('.portal-view').forEach(el => el.classList.add('hidden'));
+          const targetView = document.getElementById(`view-${selectedRole}`);
+          if (targetView) targetView.classList.remove('hidden');
+
+          const userBadge = document.getElementById('active-user-badge');
+          if (selectedRole === 'teacher') {
+            const savedClass = localStorage.getItem('school_proto_teacher_class');
+            if (savedClass) activeTeacherClass = savedClass;
+            if (userBadge) userBadge.textContent = `Role: Teacher (${activeTeacherClass})`;
+            const titleEl = document.getElementById('teacher-active-class-title');
+            if (titleEl) titleEl.textContent = activeTeacherClass;
+          } else {
+            if (userBadge) userBadge.textContent = `Role: ${selectedRole.toUpperCase()}`;
+          }
+
+          const headerUserStatus = document.getElementById('header-user-status');
+          if (headerUserStatus) headerUserStatus.classList.remove('hidden');
+
+          if (selectedRole === 'admin') {
+            renderAdminClasses();
+            populateAdminSelects();
+            const savedAdminTab = localStorage.getItem('school_proto_admin_tab');
+            if (savedAdminTab) switchAdminTab(savedAdminTab);
+          } else if (selectedRole === 'teacher') {
+            renderTeacherCurriculum();
+            const savedTeacherTab = localStorage.getItem('school_proto_teacher_tab');
+            if (savedTeacherTab) switchTeacherTab(savedTeacherTab);
+          } else if (selectedRole === 'parent') {
+            const savedChildId = localStorage.getItem('school_proto_child_id');
+            if (savedChildId && studentDatabase[savedChildId]) {
+              activeChildId = savedChildId;
+            }
+            renderParentPortal();
+          }
+        }
+      } catch (e) {
+        console.error("Could not restore saved session", e);
+      }
+    }
+
+    init();
   </script>
 </body>
-</script>
-</body>
-
 </html>

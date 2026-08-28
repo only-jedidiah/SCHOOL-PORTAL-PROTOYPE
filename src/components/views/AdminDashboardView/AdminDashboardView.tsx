@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   School,
   Users,
-  Package,
+  GraduationCap,
   Calendar,
   Calculator,
 } from 'lucide-react';
@@ -15,26 +15,33 @@ import { FeeOverrideCard } from '@/components/organisms/Admin/FeeOverrideCard';
 import { QuickPaymentCard } from '@/components/organisms/Admin/QuickPaymentCard';
 import { FeeLedgerTable } from '@/components/organisms/Admin/FeeLedgerTable';
 import { StaffDirectoryTable } from '@/components/organisms/Admin/StaffDirectoryTable';
-import { InventoryTrackerTable } from '@/components/organisms/Admin/InventoryTrackerTable';
 import { ActivitiesScheduleTable } from '@/components/organisms/Admin/ActivitiesScheduleTable';
 import { ActionModal, ActionModalType } from '@/components/organisms/ActionModal/ActionModal';
 
 export const AdminDashboardView: React.FC = () => {
-  const { classes, staff, inventory, activities } = useSchoolPortal();
-  const [activeTab, setActiveTab] = useState<string>('classes');
+  const { classes, staff, students, activities } = useSchoolPortal();
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    try {
+      return localStorage.getItem('school_portal_admin_tab') || 'classes';
+    } catch {
+      return 'classes';
+    }
+  });
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    try {
+      localStorage.setItem('school_portal_admin_tab', tabId);
+    } catch {}
+  };
   const [actionModalType, setActionModalType] = useState<ActionModalType | null>(null);
 
-  // Compute total inventory value
-  const totalInventoryValue = inventory.reduce(
-    (sum, item) => sum + item.price * item.qty,
-    0
-  );
+  const studentCount = Object.keys(students).length;
 
   const tabs: TabItem[] = [
     { id: 'classes', label: 'Classes & Allocation', icon: <School size={16} /> },
     { id: 'discounts', label: 'Dynamic Fee Overrides & Completion %', icon: <Calculator size={16} /> },
     { id: 'staff', label: 'Staff Directory', icon: <Users size={16} /> },
-    { id: 'inventory', label: 'Inventory Tracker', icon: <Package size={16} /> },
     { id: 'activities', label: 'Activities & Excursions', icon: <Calendar size={16} /> },
   ];
 
@@ -55,9 +62,9 @@ export const AdminDashboardView: React.FC = () => {
           theme="purple"
         />
         <MetricCard
-          label="Inventory Value"
-          value={`₦${totalInventoryValue.toLocaleString()}`}
-          icon={<Package size={22} />}
+          label="Enrolled Pupils"
+          value={`${studentCount} Students`}
+          icon={<GraduationCap size={22} />}
           theme="emerald"
         />
         <MetricCard
@@ -72,7 +79,7 @@ export const AdminDashboardView: React.FC = () => {
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}
-        onChange={setActiveTab}
+        onChange={handleTabChange}
       />
 
       {/* Tab Content Panels */}
@@ -94,15 +101,11 @@ export const AdminDashboardView: React.FC = () => {
         <StaffDirectoryTable onAddStaff={() => setActionModalType('add-staff')} />
       )}
 
-      {activeTab === 'inventory' && (
-        <InventoryTrackerTable onAddItem={() => setActionModalType('add-inventory')} />
-      )}
-
       {activeTab === 'activities' && (
         <ActivitiesScheduleTable onAddActivity={() => setActionModalType('add-activity')} />
       )}
 
-      {/* Action Modal for creating classes, staff, inventory, activities */}
+      {/* Action Modal for creating classes, staff, activities */}
       <ActionModal
         type={actionModalType}
         onClose={() => setActionModalType(null)}

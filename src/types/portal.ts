@@ -15,14 +15,6 @@ export interface StaffMember {
   status: 'Active' | 'On Leave';
 }
 
-export interface InventoryItem {
-  id: string;
-  description: string;
-  category: string;
-  price: number;
-  qty: number;
-}
-
 export interface ActivityEvent {
   id: string;
   name: string;

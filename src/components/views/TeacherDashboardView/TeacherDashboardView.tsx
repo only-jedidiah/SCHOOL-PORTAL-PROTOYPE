@@ -8,7 +8,21 @@ import { GradebookTable } from '@/components/organisms/Teacher/GradebookTable';
 import { ActionModal, ActionModalType } from '@/components/organisms/ActionModal/ActionModal';
 
 export const TeacherDashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('curriculum');
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    try {
+      return localStorage.getItem('school_portal_teacher_tab') || 'curriculum';
+    } catch {
+      return 'curriculum';
+    }
+  });
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    try {
+      localStorage.setItem('school_portal_teacher_tab', tabId);
+    } catch {}
+  };
+
   const [actionModalType, setActionModalType] = useState<ActionModalType | null>(null);
 
   const tabs: TabItem[] = [
@@ -34,7 +48,7 @@ export const TeacherDashboardView: React.FC = () => {
       <TabNavigation
         tabs={tabs}
         activeTab={activeTab}
-        onChange={setActiveTab}
+        onChange={handleTabChange}
       />
 
       {activeTab === 'curriculum' && (
