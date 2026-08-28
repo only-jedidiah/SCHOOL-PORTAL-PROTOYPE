@@ -1,16 +1,21 @@
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { useSchoolPortal } from '@/context/SchoolPortalContext';
 import { Typography } from '@/components/atoms/Typography/Typography';
 import { Button } from '@/components/atoms/Button/Button';
 import { Badge } from '@/components/atoms/Badge/Badge';
+import { StaffMember } from '@/types/portal';
 
 export interface StaffDirectoryTableProps {
   onAddStaff: () => void;
+  onEditStaff: (member: StaffMember) => void;
+  onDeleteStaff: (member: StaffMember) => void;
 }
 
 export const StaffDirectoryTable: React.FC<StaffDirectoryTableProps> = ({
   onAddStaff,
+  onEditStaff,
+  onDeleteStaff,
 }) => {
   const { staff } = useSchoolPortal();
 
@@ -49,6 +54,9 @@ export const StaffDirectoryTable: React.FC<StaffDirectoryTableProps> = ({
               <th className="py-3 px-2">
                 <Typography variant="label">Status</Typography>
               </th>
+              <th className="py-3 px-2 text-right">
+                <Typography variant="label">Actions</Typography>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -67,9 +75,27 @@ export const StaffDirectoryTable: React.FC<StaffDirectoryTableProps> = ({
                   <Typography variant="mono">{s.phone}</Typography>
                 </td>
                 <td className="py-3.5 px-2">
-                  <Badge variant="emerald" size="sm" dot>
+                  <Badge variant={s.status === 'Active' ? 'emerald' : 'amber'} size="sm" dot>
                     {s.status}
                   </Badge>
+                </td>
+                <td className="py-3.5 px-2 text-right">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <button
+                      onClick={() => onEditStaff(s)}
+                      className="p-1.5 rounded-lg text-text-secondary hover:text-brand-700 hover:bg-brand-50 transition"
+                      title="Edit Staff Member"
+                    >
+                      <Edit2 size={15} />
+                    </button>
+                    <button
+                      onClick={() => onDeleteStaff(s)}
+                      className="p-1.5 rounded-lg text-text-secondary hover:text-rose-600 hover:bg-rose-50 transition"
+                      title="Delete Staff Member"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -79,3 +105,4 @@ export const StaffDirectoryTable: React.FC<StaffDirectoryTableProps> = ({
     </div>
   );
 };
+

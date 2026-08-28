@@ -1,12 +1,20 @@
 import React from 'react';
-import { Save, AlertCircle } from 'lucide-react';
+import { Save, AlertCircle, Edit2, Trash2 } from 'lucide-react';
 import { useSchoolPortal } from '@/context/SchoolPortalContext';
 import { Typography } from '@/components/atoms/Typography/Typography';
 import { Button } from '@/components/atoms/Button/Button';
 import { Badge } from '@/components/atoms/Badge/Badge';
 import { StudentAccount } from '@/types/portal';
 
-export const GradebookTable: React.FC = () => {
+export interface GradebookTableProps {
+  onEditStudent?: (s: StudentAccount) => void;
+  onDeleteStudent?: (s: StudentAccount) => void;
+}
+
+export const GradebookTable: React.FC<GradebookTableProps> = ({
+  onEditStudent,
+  onDeleteStudent,
+}) => {
   const {
     students,
     activeTeacherClass,
@@ -58,14 +66,14 @@ export const GradebookTable: React.FC = () => {
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-border-default">
-                  <th className="py-3 px-2">
+                  <th className="py-3 px-2 min-w-[180px]">
                     <Typography variant="label">Student Name</Typography>
                   </th>
                   <th className="py-3 px-2 w-28">
-                    <Typography variant="label">1st Test (10)</Typography>
+                    <Typography variant="label">Test 1 (10)</Typography>
                   </th>
                   <th className="py-3 px-2 w-28">
-                    <Typography variant="label">2nd Test (10)</Typography>
+                    <Typography variant="label">Test 2 (10)</Typography>
                   </th>
                   <th className="py-3 px-2 w-28">
                     <Typography variant="label">Project (20)</Typography>
@@ -79,6 +87,11 @@ export const GradebookTable: React.FC = () => {
                   <th className="py-3 px-2">
                     <Typography variant="label">Remark</Typography>
                   </th>
+                  {(onEditStudent || onDeleteStudent) && (
+                    <th className="py-3 px-2 text-right">
+                      <Typography variant="label">Actions</Typography>
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-subtle">
@@ -159,6 +172,30 @@ export const GradebookTable: React.FC = () => {
                           {remark}
                         </Badge>
                       </td>
+                      {(onEditStudent || onDeleteStudent) && (
+                        <td className="py-3.5 px-2 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
+                            {onEditStudent && (
+                              <button
+                                onClick={() => onEditStudent(s)}
+                                className="p-1.5 rounded-lg text-text-secondary hover:text-brand-700 hover:bg-brand-50 transition"
+                                title="Edit Student"
+                              >
+                                <Edit2 size={15} />
+                              </button>
+                            )}
+                            {onDeleteStudent && (
+                              <button
+                                onClick={() => onDeleteStudent(s)}
+                                className="p-1.5 rounded-lg text-text-secondary hover:text-rose-600 hover:bg-rose-50 transition"
+                                title="Delete Student"
+                              >
+                                <Trash2 size={15} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })}

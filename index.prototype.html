@@ -1151,6 +1151,10 @@
             <td class="py-3">
               <span class="text-xs font-bold text-emerald-600"><i class="fa-solid fa-check mr-1"></i> Active</span>
             </td>
+            <td class="py-3 text-right">
+              <button onclick="editClassPrompt(${idx})" class="text-slate-400 hover:text-brand-700 p-1 mr-1" title="Edit Class"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteClassPrompt(${idx})" class="text-slate-400 hover:text-rose-600 p-1" title="Delete Class"><i class="fa-solid fa-trash"></i></button>
+            </td>
           </tr>
         `;
       });
@@ -1168,6 +1172,28 @@
           teacher: 'Unassigned'
         });
         renderAdminClasses();
+      }
+    }
+
+    function editClassPrompt(idx) {
+      const cls = schoolClasses[idx];
+      const newName = prompt("Edit Class Name:", cls.name);
+      if (!newName) return;
+      const newLevel = prompt("Edit Level Range:", cls.levelRange);
+      if (newLevel) {
+        cls.name = newName;
+        cls.levelRange = newLevel;
+        renderAdminClasses();
+        alert(`Class updated successfully!`);
+      }
+    }
+
+    function deleteClassPrompt(idx) {
+      const cls = schoolClasses[idx];
+      if (confirm(`Are you sure you want to permanently delete ${cls.name}?`)) {
+        schoolClasses.splice(idx, 1);
+        renderAdminClasses();
+        alert(`Class removed.`);
       }
     }
 
@@ -1266,21 +1292,58 @@
             <td class="py-3 font-mono text-xs text-purple-700 font-semibold">₦${m.effectiveTotal.toLocaleString()}</td>
             <td class="py-3 font-mono text-xs font-bold">${m.completionPct}%</td>
             <td class="py-3">${statusBadge} ${s.overrideReason ? '<span class="text-[9px] block text-slate-400">Overridden</span>' : ''}</td>
+            <td class="py-3 text-right">
+              <button onclick="editStudentPrompt('${id}')" class="text-slate-400 hover:text-brand-700 p-1 mr-1" title="Edit Student"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteStudentPrompt('${id}')" class="text-slate-400 hover:text-rose-600 p-1" title="Delete Student"><i class="fa-solid fa-trash"></i></button>
+            </td>
           </tr>
         `;
       });
     }
 
+    function editStudentPrompt(id) {
+      const s = studentDatabase[id];
+      if (!s) return;
+      const newName = prompt("Edit Student Full Name:", s.name);
+      if (!newName) return;
+      const newGrade = prompt("Edit Student Class/Grade:", s.grade);
+      const newTuition = Number(prompt("Edit Default Tuition (₦):", s.defaultTuition));
+
+      if (newName && newGrade) {
+        s.name = newName;
+        s.grade = newGrade;
+        if (newTuition > 0) s.defaultTuition = newTuition;
+        renderAdminLedger();
+        if (typeof renderGradebook === 'function') renderGradebook();
+        alert(`Student record updated.`);
+      }
+    }
+
+    function deleteStudentPrompt(id) {
+      const s = studentDatabase[id];
+      if (!s) return;
+      if (confirm(`Are you sure you want to delete ${s.name} from the portal?`)) {
+        delete studentDatabase[id];
+        renderAdminLedger();
+        if (typeof renderGradebook === 'function') renderGradebook();
+        alert(`Student deleted.`);
+      }
+    }
+
     function renderAdminStaff() {
       const tbody = document.getElementById('staff-tbody');
       tbody.innerHTML = '';
-      staffMembers.forEach(s => {
+      staffMembers.forEach((s, idx) => {
         tbody.innerHTML += `
           <tr>
             <td class="py-3 font-semibold text-slate-800">${s.name}</td>
             <td class="py-3 text-xs text-slate-600">${s.role}</td>
             <td class="py-3 font-mono text-xs text-slate-600">${s.phone}</td>
             <td class="py-3"><span class="bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-[10px] font-bold">Active</span></td>
+            <td class="py-3 text-right">
+              <button onclick="editStaffPrompt(${idx})" class="text-slate-400 hover:text-brand-700 p-1 mr-1" title="Edit Staff"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteStaffPrompt(${idx})" class="text-slate-400 hover:text-rose-600 p-1" title="Delete Staff"><i class="fa-solid fa-trash"></i></button>
+            </td>
           </tr>
         `;
       });
@@ -1293,6 +1356,30 @@
       if (name && role) {
         staffMembers.push({ name: name, role: role, phone: '080' + Math.floor(10000000 + Math.random() * 90000000) });
         renderAdminStaff();
+      }
+    }
+
+    function editStaffPrompt(idx) {
+      const s = staffMembers[idx];
+      const newName = prompt("Edit Staff Full Name:", s.name);
+      if (!newName) return;
+      const newRole = prompt("Edit Staff Role:", s.role);
+      const newPhone = prompt("Edit Phone Contact:", s.phone);
+      if (newName && newRole) {
+        s.name = newName;
+        s.role = newRole;
+        if (newPhone) s.phone = newPhone;
+        renderAdminStaff();
+        alert(`Staff details updated.`);
+      }
+    }
+
+    function deleteStaffPrompt(idx) {
+      const s = staffMembers[idx];
+      if (confirm(`Delete ${s.name} from staff directory?`)) {
+        staffMembers.splice(idx, 1);
+        renderAdminStaff();
+        alert(`Staff removed.`);
       }
     }
 
@@ -1331,13 +1418,17 @@
     function renderAdminActivities() {
       const tbody = document.getElementById('activities-tbody');
       tbody.innerHTML = '';
-      activitiesList.forEach(act => {
+      activitiesList.forEach((act, idx) => {
         tbody.innerHTML += `
           <tr>
             <td class="py-3 font-semibold text-slate-800">${act.name}</td>
             <td class="py-3 text-xs text-slate-600">${act.classes}</td>
             <td class="py-3 font-mono text-xs text-slate-600">${act.date}</td>
             <td class="py-3"><span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-[10px] font-bold">${act.status}</span></td>
+            <td class="py-3 text-right">
+              <button onclick="editActivityPrompt(${idx})" class="text-slate-400 hover:text-brand-700 p-1 mr-1" title="Edit Event"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button onclick="deleteActivityPrompt(${idx})" class="text-slate-400 hover:text-rose-600 p-1" title="Delete Event"><i class="fa-solid fa-trash"></i></button>
+            </td>
           </tr>
         `;
       });
@@ -1353,6 +1444,30 @@
       if (name && classes) {
         activitiesList.push({ name: name, classes: classes, date: date || 'TBD', status: 'Scheduled' });
         renderAdminActivities();
+      }
+    }
+
+    function editActivityPrompt(idx) {
+      const act = activitiesList[idx];
+      const newName = prompt("Edit Event Name:", act.name);
+      if (!newName) return;
+      const newClasses = prompt("Edit Target Classes:", act.classes);
+      const newDate = prompt("Edit Scheduled Date:", act.date);
+      if (newName && newClasses) {
+        act.name = newName;
+        act.classes = newClasses;
+        if (newDate) act.date = newDate;
+        renderAdminActivities();
+        alert(`Event updated.`);
+      }
+    }
+
+    function deleteActivityPrompt(idx) {
+      const act = activitiesList[idx];
+      if (confirm(`Delete event ${act.name}?`)) {
+        activitiesList.splice(idx, 1);
+        renderAdminActivities();
+        alert(`Event deleted.`);
       }
     }
 
@@ -1388,17 +1503,21 @@
         return;
       }
 
-      filtered.forEach((s, idx) => {
+      filtered.forEach((s) => {
         list.innerHTML += `
           <div class="border rounded-xl p-4 bg-slate-50 space-y-3 border-slate-200">
             <div class="flex justify-between items-start">
               <span class="bg-brand-700 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded">${s.classAssigned}</span>
-              <span class="text-xs font-mono text-slate-400">Code: ${s.id}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-slate-400">Code: ${s.id}</span>
+                <button onclick="editSubjectPrompt('${s.id}')" class="text-slate-400 hover:text-brand-700 text-xs p-1" title="Edit Subject"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="deleteSubjectPrompt('${s.id}')" class="text-slate-400 hover:text-rose-600 text-xs p-1" title="Delete Subject"><i class="fa-solid fa-trash"></i></button>
+              </div>
             </div>
             <h3 class="font-bold text-slate-800 text-base">${s.name}</h3>
             <div>
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Scheme of Work Breakdown:</label>
-              <textarea onchange="updateCurriculum(${idx}, this.value)" rows="4" class="w-full text-xs font-mono bg-white border border-slate-200 rounded-lg p-2.5 text-slate-700 outline-none focus:ring-2 focus:ring-brand-700">${s.curriculum}</textarea>
+              <textarea onchange="updateCurriculumById('${s.id}', this.value)" rows="4" class="w-full text-xs font-mono bg-white border border-slate-200 rounded-lg p-2.5 text-slate-700 outline-none focus:ring-2 focus:ring-brand-700">${s.curriculum}</textarea>
             </div>
           </div>
         `;
@@ -1418,9 +1537,32 @@
       }
     }
 
-    function updateCurriculum(idx, value) {
-      subjectsDatabase[idx].curriculum = value;
-      alert(`Scheme of Work updated!`);
+    function editSubjectPrompt(id) {
+      const sub = subjectsDatabase.find(s => s.id === id);
+      if (!sub) return;
+      const newName = prompt("Edit Subject Name:", sub.name);
+      if (newName) {
+        sub.name = newName;
+        renderTeacherCurriculum();
+        alert(`Subject updated!`);
+      }
+    }
+
+    function deleteSubjectPrompt(id) {
+      const idx = subjectsDatabase.findIndex(s => s.id === id);
+      if (idx !== -1 && confirm(`Delete subject ${subjectsDatabase[idx].name}?`)) {
+        subjectsDatabase.splice(idx, 1);
+        renderTeacherCurriculum();
+        alert(`Subject deleted.`);
+      }
+    }
+
+    function updateCurriculumById(id, value) {
+      const sub = subjectsDatabase.find(s => s.id === id);
+      if (sub) {
+        sub.curriculum = value;
+        alert(`Scheme of Work updated!`);
+      }
     }
 
     // TEACHER ENROLLMENT

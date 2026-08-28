@@ -17,9 +17,26 @@ import { FeeLedgerTable } from '@/components/organisms/Admin/FeeLedgerTable';
 import { StaffDirectoryTable } from '@/components/organisms/Admin/StaffDirectoryTable';
 import { ActivitiesScheduleTable } from '@/components/organisms/Admin/ActivitiesScheduleTable';
 import { ActionModal, ActionModalType } from '@/components/organisms/ActionModal/ActionModal';
+import { DeleteConfirmModal } from '@/components/organisms/DeleteConfirmModal/DeleteConfirmModal';
+import {
+  SchoolClass,
+  StaffMember,
+  ActivityEvent,
+  StudentAccount,
+} from '@/types/portal';
 
 export const AdminDashboardView: React.FC = () => {
-  const { classes, staff, students, activities } = useSchoolPortal();
+  const {
+    classes,
+    staff,
+    students,
+    activities,
+    deleteClass,
+    deleteStaff,
+    deleteActivity,
+    deleteStudent,
+  } = useSchoolPortal();
+
   const [activeTab, setActiveTab] = useState<string>(() => {
     try {
       return localStorage.getItem('school_portal_admin_tab') || 'classes';
@@ -34,7 +51,24 @@ export const AdminDashboardView: React.FC = () => {
       localStorage.setItem('school_portal_admin_tab', tabId);
     } catch {}
   };
+
   const [actionModalType, setActionModalType] = useState<ActionModalType | null>(null);
+  const [editingItem, setEditingItem] = useState<
+    SchoolClass | StaffMember | ActivityEvent | StudentAccount | null
+  >(null);
+
+  // Deletion modal state
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    itemType: string;
+    itemName: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    itemType: '',
+    itemName: '',
+    onConfirm: () => {},
+  });
 
   const studentCount = Object.keys(students).length;
 
@@ -84,7 +118,24 @@ export const AdminDashboardView: React.FC = () => {
 
       {/* Tab Content Panels */}
       {activeTab === 'classes' && (
-        <ClassManagementTable onAddClass={() => setActionModalType('add-class')} />
+        <ClassManagementTable
+          onAddClass={() => {
+            setEditingItem(null);
+            setActionModalType('add-class');
+          }}
+          onEditClass={cls => {
+            setEditingItem(cls);
+            setActionModalType('edit-class');
+          }}
+          onDeleteClass={cls => {
+            setDeleteModal({
+              isOpen: true,
+              itemType: 'Class',
+              itemName: cls.name,
+              onConfirm: () => deleteClass(cls.id),
+            });
+          }}
+        />
       )}
 
       {activeTab === 'discounts' && (
@@ -93,23 +144,84 @@ export const AdminDashboardView: React.FC = () => {
             <FeeOverrideCard />
             <QuickPaymentCard />
           </div>
-          <FeeLedgerTable />
+          <FeeLedgerTable
+            onEditStudent={stu => {
+              setEditingItem(stu);
+              setActionModalType('edit-student');
+            }}
+            onDeleteStudent={stu => {
+              setDeleteModal({
+                isOpen: true,
+                itemType: 'Student Account',
+                itemName: stu.name,
+                onConfirm: () => deleteStudent(stu.id),
+              });
+            }}
+          />
         </div>
       )}
 
       {activeTab === 'staff' && (
-        <StaffDirectoryTable onAddStaff={() => setActionModalType('add-staff')} />
+        <StaffDirectoryTable
+          onAddStaff={() => {
+            setEditingItem(null);
+            setActionModalType('add-staff');
+          }}
+          onEditStaff={member => {
+            setEditingItem(member);
+            setActionModalType('edit-staff');
+          }}
+          onDeleteStaff={member => {
+            setDeleteModal({
+              isOpen: true,
+              itemType: 'Staff Member',
+              itemName: member.name,
+              onConfirm: () => deleteStaff(member.id),
+            });
+          }}
+        />
       )}
 
       {activeTab === 'activities' && (
-        <ActivitiesScheduleTable onAddActivity={() => setActionModalType('add-activity')} />
+        <ActivitiesScheduleTable
+          onAddActivity={() => {
+            setEditingItem(null);
+            setActionModalType('add-activity');
+          }}
+          onEditActivity={act => {
+            setEditingItem(act);
+            setActionModalType('edit-activity');
+          }}
+          onDeleteActivity={act => {
+            setDeleteModal({
+              isOpen: true,
+              itemType: 'Activity Event',
+              itemName: act.name,
+              onConfirm: () => deleteActivity(act.id),
+            });
+          }}
+        />
       )}
 
-      {/* Action Modal for creating classes, staff, activities */}
+      {/* Action Modal for creating and editing classes, staff, activities, students */}
       <ActionModal
         type={actionModalType}
-        onClose={() => setActionModalType(null)}
+        initialData={editingItem}
+        onClose={() => {
+          setActionModalType(null);
+          setEditingItem(null);
+        }}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={deleteModal.isOpen}
+        itemType={deleteModal.itemType}
+        itemName={deleteModal.itemName}
+        onConfirm={deleteModal.onConfirm}
+        onClose={() => setDeleteModal(prev => ({ ...prev, isOpen: false }))}
       />
     </DashboardShell>
   );
 };
+

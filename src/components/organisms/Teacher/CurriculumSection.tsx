@@ -1,16 +1,21 @@
 import React from 'react';
-import { Plus, BookOpen } from 'lucide-react';
+import { Plus, BookOpen, Edit2, Trash2 } from 'lucide-react';
 import { useSchoolPortal } from '@/context/SchoolPortalContext';
 import { Typography } from '@/components/atoms/Typography/Typography';
 import { Button } from '@/components/atoms/Button/Button';
 import { Badge } from '@/components/atoms/Badge/Badge';
+import { SubjectCurriculum } from '@/types/portal';
 
 export interface CurriculumSectionProps {
   onAddSubject: () => void;
+  onEditSubject: (sub: SubjectCurriculum) => void;
+  onDeleteSubject: (sub: SubjectCurriculum) => void;
 }
 
 export const CurriculumSection: React.FC<CurriculumSectionProps> = ({
   onAddSubject,
+  onEditSubject,
+  onDeleteSubject,
 }) => {
   const { subjects, activeTeacherClass, updateCurriculum } = useSchoolPortal();
   const filteredSubjects = subjects.filter(s => s.classAssigned === activeTeacherClass);
@@ -56,7 +61,25 @@ export const CurriculumSection: React.FC<CurriculumSectionProps> = ({
                 <Badge variant="brand" size="sm">
                   {sub.classAssigned}
                 </Badge>
-                <span className="text-xs font-mono text-text-muted">Code: {sub.id}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-text-muted">Code: {sub.id}</span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => onEditSubject(sub)}
+                      className="p-1 rounded text-text-secondary hover:text-brand-700 hover:bg-brand-50 transition"
+                      title="Edit Subject"
+                    >
+                      <Edit2 size={13} />
+                    </button>
+                    <button
+                      onClick={() => onDeleteSubject(sub)}
+                      className="p-1 rounded text-text-secondary hover:text-rose-600 hover:bg-rose-50 transition"
+                      title="Delete Subject"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                </div>
               </div>
               <Typography variant="h3" className="text-text-primary">
                 {sub.name}
@@ -83,3 +106,4 @@ export const CurriculumSection: React.FC<CurriculumSectionProps> = ({
     </div>
   );
 };
+

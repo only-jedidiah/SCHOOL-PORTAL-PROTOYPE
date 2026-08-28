@@ -39,6 +39,28 @@ export const supabaseService = {
     return !error;
   },
 
+  async updateClass(cls: SchoolClass): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('classes')
+      .update({
+        name: cls.name,
+        level_range: cls.levelRange,
+        teacher: cls.teacher,
+      })
+      .eq('id', cls.id);
+    return !error;
+  },
+
+  async deleteClass(classId: string): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('classes')
+      .delete()
+      .eq('id', classId);
+    return !error;
+  },
+
   async updateClassTeacher(classId: string, teacher: string): Promise<boolean> {
     if (!isSupabaseConfigured || !supabase) return false;
     const { error } = await supabase
@@ -80,6 +102,29 @@ export const supabaseService = {
     return !error;
   },
 
+  async updateStaff(member: StaffMember): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('staff')
+      .update({
+        name: member.name,
+        role: member.role,
+        phone: member.phone,
+        status: member.status,
+      })
+      .eq('id', member.id);
+    return !error;
+  },
+
+  async deleteStaff(staffId: string): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('staff')
+      .delete()
+      .eq('id', staffId);
+    return !error;
+  },
+
   // 3. Activities
   async getActivities(): Promise<ActivityEvent[] | null> {
     if (!isSupabaseConfigured || !supabase) return null;
@@ -112,6 +157,29 @@ export const supabaseService = {
     return !error;
   },
 
+  async updateActivity(act: ActivityEvent): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('activities')
+      .update({
+        name: act.name,
+        classes: act.classes,
+        date: act.date,
+        status: act.status,
+      })
+      .eq('id', act.id);
+    return !error;
+  },
+
+  async deleteActivity(actId: string): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('activities')
+      .delete()
+      .eq('id', actId);
+    return !error;
+  },
+
   // 4. Subjects
   async getSubjects(): Promise<SubjectCurriculum[] | null> {
     if (!isSupabaseConfigured || !supabase) return null;
@@ -139,6 +207,28 @@ export const supabaseService = {
       class_assigned: sub.classAssigned,
       curriculum: sub.curriculum,
     });
+    return !error;
+  },
+
+  async updateSubject(sub: SubjectCurriculum): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('subjects')
+      .update({
+        name: sub.name,
+        class_assigned: sub.classAssigned,
+        curriculum: sub.curriculum,
+      })
+      .eq('id', sub.id);
+    return !error;
+  },
+
+  async deleteSubject(subId: string): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('subjects')
+      .delete()
+      .eq('id', subId);
     return !error;
   },
 
@@ -307,4 +397,34 @@ export const supabaseService = {
 
     return true;
   },
+
+  async updateStudent(student: {
+    id: string;
+    name: string;
+    grade: string;
+    defaultTuition: number;
+  }): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    const { error } = await supabase
+      .from('students')
+      .update({
+        name: student.name,
+        grade: student.grade,
+        default_tuition: student.defaultTuition,
+      })
+      .eq('id', student.id);
+    return !error;
+  },
+
+  async deleteStudent(studentId: string): Promise<boolean> {
+    if (!isSupabaseConfigured || !supabase) return false;
+    // Delete student grades first (or CASCADE handles it)
+    await supabase.from('student_grades').delete().eq('student_id', studentId);
+    const { error } = await supabase
+      .from('students')
+      .delete()
+      .eq('id', studentId);
+    return !error;
+  },
 };
+

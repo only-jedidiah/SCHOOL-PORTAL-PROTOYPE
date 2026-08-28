@@ -1,10 +1,20 @@
 import React from 'react';
+import { Edit2, Trash2 } from 'lucide-react';
 import { useSchoolPortal } from '@/context/SchoolPortalContext';
 import { Typography } from '@/components/atoms/Typography/Typography';
 import { Badge } from '@/components/atoms/Badge/Badge';
 import { ProgressBar } from '@/components/atoms/ProgressBar/ProgressBar';
+import { StudentAccount } from '@/types/portal';
 
-export const FeeLedgerTable: React.FC = () => {
+export interface FeeLedgerTableProps {
+  onEditStudent?: (s: StudentAccount) => void;
+  onDeleteStudent?: (s: StudentAccount) => void;
+}
+
+export const FeeLedgerTable: React.FC<FeeLedgerTableProps> = ({
+  onEditStudent,
+  onDeleteStudent,
+}) => {
   const { students, calculateFeeMetrics } = useSchoolPortal();
   const studentIds = Object.keys(students);
 
@@ -42,6 +52,11 @@ export const FeeLedgerTable: React.FC = () => {
               <th className="py-3 px-2">
                 <Typography variant="label">Status</Typography>
               </th>
+              {(onEditStudent || onDeleteStudent) && (
+                <th className="py-3 px-2 text-right">
+                  <Typography variant="label">Actions</Typography>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -113,6 +128,30 @@ export const FeeLedgerTable: React.FC = () => {
                       )}
                     </div>
                   </td>
+                  {(onEditStudent || onDeleteStudent) && (
+                    <td className="py-3.5 px-2 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {onEditStudent && (
+                          <button
+                            onClick={() => onEditStudent(s)}
+                            className="p-1.5 rounded-lg text-text-secondary hover:text-brand-700 hover:bg-brand-50 transition"
+                            title="Edit Student"
+                          >
+                            <Edit2 size={15} />
+                          </button>
+                        )}
+                        {onDeleteStudent && (
+                          <button
+                            onClick={() => onDeleteStudent(s)}
+                            className="p-1.5 rounded-lg text-text-secondary hover:text-rose-600 hover:bg-rose-50 transition"
+                            title="Delete Student"
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  )}
                 </tr>
               );
             })}
@@ -122,3 +161,4 @@ export const FeeLedgerTable: React.FC = () => {
     </div>
   );
 };
+

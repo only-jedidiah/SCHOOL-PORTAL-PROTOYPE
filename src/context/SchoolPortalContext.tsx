@@ -57,16 +57,26 @@ interface SchoolPortalContextType {
   
   // Admin actions
   addClass: (name: string, levelRange: string) => void;
+  editClass: (id: string, name: string, levelRange: string, teacher?: string) => void;
+  deleteClass: (id: string) => void;
   reallocateTeacher: (classId: string, teacherName: string) => void;
   applyFeeOverride: (studentId: string, newOutstanding: number, reason: string) => void;
   recordAdminPayment: (studentId: string, amount: number) => void;
   addStaff: (name: string, role: string, phone?: string) => void;
+  editStaff: (id: string, name: string, role: string, phone: string, status: 'Active' | 'On Leave') => void;
+  deleteStaff: (id: string) => void;
   addActivity: (name: string, classes: string, date: string) => void;
+  editActivity: (id: string, name: string, classes: string, date: string, status: 'Scheduled' | 'Planned' | 'Completed') => void;
+  deleteActivity: (id: string) => void;
 
   // Teacher actions
   addSubject: (name: string, classAssigned: string) => void;
+  editSubject: (id: string, name: string, classAssigned: string, curriculum?: string) => void;
+  deleteSubject: (id: string) => void;
   updateCurriculum: (subjectId: string, newCurriculum: string) => void;
   enrollStudent: (data: EnrollStudentData) => void;
+  editStudent: (id: string, name: string, grade: string, defaultTuition: number) => void;
+  deleteStudent: (id: string) => void;
   updateStudentGradeField: (studentId: string, field: 't1' | 't2' | 'proj' | 'exam', value: number) => void;
 
   // Parent actions
@@ -534,6 +544,29 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     showToast('success', 'Class Added', `Successfully created ${name}`);
   };
 
+  const editClass = (id: string, name: string, levelRange: string, teacher?: string) => {
+    setClasses(prev =>
+      prev.map(c => (c.id === id ? { ...c, name, levelRange, teacher: teacher !== undefined ? teacher : c.teacher } : c))
+    );
+    const existing = classes.find(c => c.id === id);
+    if (existing) {
+      supabaseService.updateClass({
+        id,
+        name,
+        levelRange,
+        teacher: teacher !== undefined ? teacher : existing.teacher,
+      });
+    }
+    showToast('success', 'Class Updated', `Modified details for ${name}`);
+  };
+
+  const deleteClass = (id: string) => {
+    const target = classes.find(c => c.id === id);
+    setClasses(prev => prev.filter(c => c.id !== id));
+    supabaseService.deleteClass(id);
+    showToast('info', 'Class Removed', `Deleted class ${target?.name || id}`);
+  };
+
   const reallocateTeacher = (classId: string, teacherName: string) => {
     setClasses(prev =>
       prev.map(c => (c.id === classId ? { ...c, teacher: teacherName } : c))
@@ -586,12 +619,46 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     showToast('success', 'Staff Member Added', `${name} added as ${role}`);
   };
 
+  const editStaff = (id: string, name: string, role: string, phone: string, status: 'Active' | 'On Leave') => {
+    const updatedMember: StaffMember = { id, name, role, phone, status };
+    setStaff(prev => prev.map(s => (s.id === id ? updatedMember : s)));
+    supabaseService.updateStaff(updatedMember);
+    showToast('success', 'Staff Member Updated', `Saved profile changes for ${name}`);
+  };
+
+  const deleteStaff = (id: string) => {
+    const target = staff.find(s => s.id === id);
+    setStaff(prev => prev.filter(s => s.id !== id));
+    supabaseService.deleteStaff(id);
+    showToast('info', 'Staff Member Deleted', `Removed ${target?.name || id} from directory`);
+  };
+
   const addActivity = (name: string, targetClasses: string, date: string) => {
     const newId = `ACT-${String(activities.length + 1).padStart(3, '0')}`;
     const newAct: ActivityEvent = { id: newId, name, classes: targetClasses, date: date || 'TBD', status: 'Scheduled' };
     setActivities(prev => [...prev, newAct]);
     supabaseService.addActivity(newAct);
     showToast('success', 'Activity Scheduled', `Created event: ${name}`);
+  };
+
+  const editActivity = (
+    id: string,
+    name: string,
+    targetClasses: string,
+    date: string,
+    status: 'Scheduled' | 'Planned' | 'Completed'
+  ) => {
+    const updatedAct: ActivityEvent = { id, name, classes: targetClasses, date: date || 'TBD', status };
+    setActivities(prev => prev.map(a => (a.id === id ? updatedAct : a)));
+    supabaseService.updateActivity(updatedAct);
+    showToast('success', 'Activity Updated', `Saved details for ${name}`);
+  };
+
+  const deleteActivity = (id: string) => {
+    const target = activities.find(a => a.id === id);
+    setActivities(prev => prev.filter(a => a.id !== id));
+    supabaseService.deleteActivity(id);
+    showToast('info', 'Activity Removed', `Deleted event ${target?.name || id}`);
   };
 
   // TEACHER ACTIONS
@@ -606,6 +673,38 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setSubjects(prev => [...prev, newSub]);
     supabaseService.addSubject(newSub);
     showToast('success', 'Subject Added', `${name} created for ${classAssigned}`);
+  };
+
+  const editSubject = (id: string, name: string, classAssigned: string, curriculum?: string) => {
+    setSubjects(prev =>
+      prev.map(s =>
+        s.id === id
+          ? {
+              ...s,
+              name,
+              classAssigned,
+              curriculum: curriculum !== undefined ? curriculum : s.curriculum,
+            }
+          : s
+      )
+    );
+    const existing = subjects.find(s => s.id === id);
+    if (existing) {
+      supabaseService.updateSubject({
+        id,
+        name,
+        classAssigned,
+        curriculum: curriculum !== undefined ? curriculum : existing.curriculum,
+      });
+    }
+    showToast('success', 'Subject Updated', `Saved subject info for ${name}`);
+  };
+
+  const deleteSubject = (id: string) => {
+    const target = subjects.find(s => s.id === id);
+    setSubjects(prev => prev.filter(s => s.id !== id));
+    supabaseService.deleteSubject(id);
+    showToast('info', 'Subject Deleted', `Removed ${target?.name || id}`);
   };
 
   const updateCurriculum = (subjectId: string, newCurriculum: string) => {
@@ -672,6 +771,51 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     });
 
     showToast('success', 'Student Enrolled', `${data.studentName} registered under ${data.grade}`);
+  };
+
+  const editStudent = (id: string, name: string, grade: string, defaultTuition: number) => {
+    setStudents(prev => {
+      const current = prev[id];
+      if (!current) return prev;
+      return {
+        ...prev,
+        [id]: {
+          ...current,
+          name,
+          grade,
+          defaultTuition,
+        },
+      };
+    });
+    supabaseService.updateStudent({ id, name, grade, defaultTuition });
+    showToast('success', 'Student Record Updated', `Saved changes for ${name}`);
+  };
+
+  const deleteStudent = (id: string) => {
+    const target = students[id];
+    setStudents(prev => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+
+    // Remove from families
+    if (target?.parentId) {
+      setFamilies(prev => {
+        const fam = prev[target.parentId];
+        if (!fam) return prev;
+        return {
+          ...prev,
+          [target.parentId]: {
+            ...fam,
+            childrenIds: fam.childrenIds.filter(cId => cId !== id),
+          },
+        };
+      });
+    }
+
+    supabaseService.deleteStudent(id);
+    showToast('info', 'Student Record Deleted', `Removed ${target?.name || id}`);
   };
 
   const updateStudentGradeField = (studentId: string, field: 't1' | 't2' | 'proj' | 'exam', value: number) => {
@@ -753,14 +897,24 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setActiveChildId,
         setActiveTeacherClass,
         addClass,
+        editClass,
+        deleteClass,
         reallocateTeacher,
         applyFeeOverride,
         recordAdminPayment,
         addStaff,
+        editStaff,
+        deleteStaff,
         addActivity,
+        editActivity,
+        deleteActivity,
         addSubject,
+        editSubject,
+        deleteSubject,
         updateCurriculum,
         enrollStudent,
+        editStudent,
+        deleteStudent,
         updateStudentGradeField,
         payParentInstallment,
         showToast,

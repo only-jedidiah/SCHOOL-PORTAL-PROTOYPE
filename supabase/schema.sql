@@ -95,30 +95,37 @@ ALTER TABLE public.student_grades ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow public read classes" ON public.classes FOR SELECT USING (true);
 CREATE POLICY "Allow public insert classes" ON public.classes FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update classes" ON public.classes FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete classes" ON public.classes FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read staff" ON public.staff FOR SELECT USING (true);
 CREATE POLICY "Allow public insert staff" ON public.staff FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update staff" ON public.staff FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete staff" ON public.staff FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read activities" ON public.activities FOR SELECT USING (true);
 CREATE POLICY "Allow public insert activities" ON public.activities FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update activities" ON public.activities FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete activities" ON public.activities FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read subjects" ON public.subjects FOR SELECT USING (true);
 CREATE POLICY "Allow public insert subjects" ON public.subjects FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update subjects" ON public.subjects FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete subjects" ON public.subjects FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read families" ON public.families FOR SELECT USING (true);
 CREATE POLICY "Allow public insert families" ON public.families FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update families" ON public.families FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete families" ON public.families FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read students" ON public.students FOR SELECT USING (true);
 CREATE POLICY "Allow public insert students" ON public.students FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update students" ON public.students FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete students" ON public.students FOR DELETE USING (true);
 
 CREATE POLICY "Allow public read student_grades" ON public.student_grades FOR SELECT USING (true);
 CREATE POLICY "Allow public insert student_grades" ON public.student_grades FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow public update student_grades" ON public.student_grades FOR UPDATE USING (true);
+CREATE POLICY "Allow public delete student_grades" ON public.student_grades FOR DELETE USING (true);
 
 -- ==============================================================================
 -- INITIAL SEED DATA
