@@ -9,6 +9,7 @@ import {
   StudentAccount,
   FeeMetrics,
   ToastMessage,
+  UserCredential,
 } from '@/types/portal';
 import { supabaseService } from '@/services/supabaseService';
 import { isSupabaseConfigured } from '@/lib/supabase';
@@ -26,6 +27,7 @@ interface EnrollStudentData {
 interface SchoolPortalContextType {
   // Current session
   currentRole: UserRole | null;
+  currentUserEmail: string | null;
   activeTeacherClass: string;
   activeChildId: string;
   isLoading: boolean;
@@ -43,8 +45,12 @@ interface SchoolPortalContextType {
   // Metrics helper
   calculateFeeMetrics: (student: StudentAccount) => FeeMetrics;
 
+  // Auth & Credentials
+  validateCredentials: (email: string, password: string, role: UserRole) => { isValid: boolean; mustChangePassword: boolean; error?: string };
+  updateUserPassword: (email: string, newPassword: string, role: UserRole) => boolean;
+
   // Actions
-  login: (role: UserRole, teacherClass?: string) => void;
+  login: (role: UserRole, teacherClass?: string, email?: string) => void;
   logout: () => void;
   setActiveChildId: (childId: string) => void;
   setActiveTeacherClass: (cls: string) => void;
@@ -150,8 +156,33 @@ const initialStudents: Record<string, StudentAccount> = {
   },
 };
 
+const DEFAULT_GENERIC_PASSWORD = '1234567890';
+
+const initialUsers: Record<string, UserCredential> = {
+  'admin@gracefield.edu.ng': {
+    email: 'admin@gracefield.edu.ng',
+    role: 'admin',
+    password: DEFAULT_GENERIC_PASSWORD,
+    mustChangePassword: true,
+  },
+  'teacher@gracefield.edu.ng': {
+    email: 'teacher@gracefield.edu.ng',
+    role: 'teacher',
+    password: DEFAULT_GENERIC_PASSWORD,
+    mustChangePassword: true,
+  },
+  'parent@gracefield.edu.ng': {
+    email: 'parent@gracefield.edu.ng',
+    role: 'parent',
+    password: DEFAULT_GENERIC_PASSWORD,
+    mustChangePassword: true,
+  },
+};
+
 const STORAGE_KEYS = {
   ROLE: 'school_portal_current_role',
+  USER_EMAIL: 'school_portal_current_email',
+  USERS: 'school_portal_user_credentials_store',
   TEACHER_CLASS: 'school_portal_teacher_class',
   CHILD_ID: 'school_portal_active_child_id',
   CLASSES: 'school_portal_classes',
@@ -171,6 +202,26 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
       return (saved === 'admin' || saved === 'teacher' || saved === 'parent') ? (saved as UserRole) : null;
     } catch {
       return null;
+    }
+  });
+
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(() => {
+    try {
+      return localStorage.getItem(STORAGE_KEYS.USER_EMAIL) || null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [users, setUsers] = useState<Record<string, UserCredential>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.USERS);
+      if (saved) {
+        return { ...initialUsers, ...JSON.parse(saved) };
+      }
+      return initialUsers;
+    } catch {
+      return initialUsers;
     }
   });
 
@@ -248,6 +299,23 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
   });
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Sync users store to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    } catch {}
+  }, [users]);
+
+  useEffect(() => {
+    try {
+      if (currentUserEmail) {
+        localStorage.setItem(STORAGE_KEYS.USER_EMAIL, currentUserEmail);
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
+      }
+    } catch {}
+  }, [currentUserEmail]);
 
   // Sync state changes to localStorage
   useEffect(() => {
@@ -365,12 +433,71 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setToasts(prev => prev.filter(t => t.id !== id));
   };
 
-  const login = (role: UserRole, teacherClass?: string) => {
+  // Auth & Credentials helpers
+  const validateCredentials = (email: string, pass: string, role: UserRole) => {
+    const normalized = email.trim().toLowerCase();
+    const user = users[normalized];
+
+    // If user not in initial registry, support new registration with generic password
+    if (!user) {
+      if (pass === DEFAULT_GENERIC_PASSWORD) {
+        return { isValid: true, mustChangePassword: true };
+      }
+      return {
+        isValid: false,
+        mustChangePassword: true,
+        error: `Incorrect password for ${role} user. Default initial password is 1234567890.`,
+      };
+    }
+
+    if (user.password !== pass) {
+      return {
+        isValid: false,
+        mustChangePassword: user.mustChangePassword,
+        error: 'Incorrect password entered. Please verify your credentials.',
+      };
+    }
+
+    return {
+      isValid: true,
+      mustChangePassword: user.mustChangePassword,
+    };
+  };
+
+  const updateUserPassword = (email: string, newPass: string, role: UserRole) => {
+    const normalized = email.trim().toLowerCase();
+    const existing = users[normalized] || {
+      email: normalized,
+      role,
+      password: DEFAULT_GENERIC_PASSWORD,
+      mustChangePassword: true,
+    };
+
+    setUsers(prev => ({
+      ...prev,
+      [normalized]: {
+        ...existing,
+        role: existing.role || role,
+        password: newPass,
+        mustChangePassword: false,
+      },
+    }));
+    return true;
+  };
+
+  const login = (role: UserRole, teacherClass?: string, email?: string) => {
     setIsLoading(true);
     if (teacherClass) {
       setActiveTeacherClass(teacherClass);
       try {
         localStorage.setItem(STORAGE_KEYS.TEACHER_CLASS, teacherClass);
+      } catch {}
+    }
+    if (email) {
+      const normalized = email.trim().toLowerCase();
+      setCurrentUserEmail(normalized);
+      try {
+        localStorage.setItem(STORAGE_KEYS.USER_EMAIL, normalized);
       } catch {}
     }
     setCurrentRole(role);
@@ -387,8 +514,10 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const logout = () => {
     setIsLoading(true);
     setCurrentRole(null);
+    setCurrentUserEmail(null);
     try {
       localStorage.removeItem(STORAGE_KEYS.ROLE);
+      localStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
     } catch {}
     showToast('info', 'Logged Out', 'You have been safely signed out.');
     setTimeout(() => {
@@ -604,6 +733,7 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
     <SchoolPortalContext.Provider
       value={{
         currentRole,
+        currentUserEmail,
         activeTeacherClass,
         activeChildId,
         isLoading,
@@ -616,6 +746,8 @@ export const SchoolPortalProvider: React.FC<{ children: React.ReactNode }> = ({ 
         students,
         toasts,
         calculateFeeMetrics,
+        validateCredentials,
+        updateUserPassword,
         login,
         logout,
         setActiveChildId,

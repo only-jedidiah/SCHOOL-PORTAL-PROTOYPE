@@ -146,22 +146,45 @@
         </button>
 
         <div class="space-y-1">
-          <span id="login-role-badge"
-            class="text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-700 px-2.5 py-0.5 rounded-md">Admin
-            Login</span>
-          <h3 class="font-outfit text-xl font-bold text-slate-900">Sign in to your Account</h3>
-          <p class="text-xs text-slate-500">Enter your credentials to access the portal.</p>
+          <div class="flex items-center justify-between">
+            <span id="login-role-badge"
+              class="text-[10px] font-bold uppercase tracking-wider bg-brand-100 text-brand-700 px-2.5 py-0.5 rounded-md">Admin
+              Login</span>
+            <span id="login-change-pill"
+              class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-md hidden">
+              <i class="fa-solid fa-key mr-1"></i> Security Setup
+            </span>
+          </div>
+          <h3 id="login-modal-title" class="font-outfit text-xl font-bold text-slate-900">Sign in to your Account</h3>
+          <p id="login-modal-subtitle" class="text-xs text-slate-500">Enter your credentials to access the portal.</p>
         </div>
 
-        <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div id="login-error-alert"
+          class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 flex items-start gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-rose-600 mt-0.5"></i>
+          <span id="login-error-text"></span>
+        </div>
+
+        <!-- STEP 1: INITIAL LOGIN FORM -->
+        <form id="login-credentials-form" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+          <div class="bg-brand-50/60 p-3 rounded-xl border border-brand-100 text-xs text-brand-900 flex items-start gap-2">
+            <i class="fa-solid fa-key text-brand-700 mt-0.5"></i>
+            <div>
+              <p class="font-semibold">Default Initial Password</p>
+              <p class="text-[11px] text-slate-600 mt-0.5">
+                Generic password: <code class="bg-white px-1.5 py-0.5 rounded font-mono font-bold text-brand-800 border border-brand-200">1234567890</code>. You will set your individual private password upon login.
+              </p>
+            </div>
+          </div>
+
           <div>
             <label class="text-xs font-semibold text-slate-700">Username / Email</label>
             <input type="text" id="login-username" required
               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
           </div>
           <div>
-            <label class="text-xs font-semibold text-slate-700">Password</label>
-            <input type="password" id="login-password" required value="password123"
+            <label class="text-xs font-semibold text-slate-700">Password <span class="text-slate-400 font-normal">(Default: 1234567890)</span></label>
+            <input type="password" id="login-password" required value="1234567890"
               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
           </div>
 
@@ -180,6 +203,42 @@
             class="w-full bg-brand-700 hover:bg-brand-800 text-white text-xs py-3 rounded-xl font-semibold transition shadow-sm">
             Access Portal
           </button>
+        </form>
+
+        <!-- STEP 2: MANDATORY PASSWORD CHANGE FORM -->
+        <form id="login-password-change-form" onsubmit="handlePasswordChangeSubmit(event)" class="space-y-4 hidden">
+          <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1.5">
+            <div class="flex items-center gap-1.5 font-bold text-amber-800">
+              <i class="fa-solid fa-triangle-exclamation text-amber-700"></i>
+              <span>Password Change Required</span>
+            </div>
+            <p class="text-[11px] leading-relaxed text-amber-900/90">
+              You are currently using the default system password (<code class="font-mono bg-white px-1 py-0.5 rounded border border-amber-200 font-bold">1234567890</code>). Please create your private personal password.
+            </p>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-700">New Personal Password * <span class="text-slate-400 font-normal">(Min 6 chars)</span></label>
+            <input type="password" id="login-new-password" required placeholder="Enter new private password"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-700">Confirm New Password *</label>
+            <input type="password" id="login-confirm-password" required placeholder="Confirm new private password"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-brand-700">
+          </div>
+
+          <div class="pt-2 space-y-2">
+            <button type="submit"
+              class="w-full bg-brand-700 hover:bg-brand-800 text-white text-xs py-3 rounded-xl font-semibold transition shadow-sm">
+              Save New Password & Enter Portal
+            </button>
+            <button type="button" onclick="switchLoginModalToStep('login')"
+              class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs py-2.5 rounded-xl font-semibold transition">
+              <i class="fa-solid fa-arrow-left mr-1"></i> Back to Login
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -819,9 +878,35 @@
       }
     };
 
+    const DEFAULT_GENERIC_PASSWORD = '1234567890';
+
+    const defaultUserAccounts = {
+      'admin@gracefield.edu.ng': { role: 'admin', password: DEFAULT_GENERIC_PASSWORD, mustChange: true },
+      'teacher@gracefield.edu.ng': { role: 'teacher', password: DEFAULT_GENERIC_PASSWORD, mustChange: true },
+      'parent@gracefield.edu.ng': { role: 'parent', password: DEFAULT_GENERIC_PASSWORD, mustChange: true }
+    };
+
+    function getUserAccountsStore() {
+      try {
+        const saved = localStorage.getItem('school_proto_user_credentials');
+        return saved ? { ...defaultUserAccounts, ...JSON.parse(saved) } : { ...defaultUserAccounts };
+      } catch (e) {
+        return { ...defaultUserAccounts };
+      }
+    }
+
+    function saveUserAccountsStore(accounts) {
+      try {
+        localStorage.setItem('school_proto_user_credentials', JSON.stringify(accounts));
+      } catch (e) {}
+    }
+
+    let userAccounts = getUserAccountsStore();
+
     let selectedRole = 'admin';
     let activeChildId = 'STU-2026-001';
     let activeTeacherClass = 'Grade 3B';
+    let currentLoginUser = '';
 
     // HELPER DYNAMIC FEE CALCULATOR
     function calculateFeeMetrics(student) {
@@ -843,10 +928,49 @@
       document.getElementById('header-user-status').classList.add('hidden');
     }
 
+    function switchLoginModalToStep(step) {
+      const credentialsForm = document.getElementById('login-credentials-form');
+      const changePasswordForm = document.getElementById('login-password-change-form');
+      const title = document.getElementById('login-modal-title');
+      const subtitle = document.getElementById('login-modal-subtitle');
+      const changePill = document.getElementById('login-change-pill');
+      const errorAlert = document.getElementById('login-error-alert');
+
+      if (errorAlert) errorAlert.classList.add('hidden');
+
+      if (step === 'login') {
+        credentialsForm.classList.remove('hidden');
+        changePasswordForm.classList.add('hidden');
+        changePill.classList.add('hidden');
+        title.textContent = 'Sign in to your Account';
+        subtitle.textContent = 'Enter your credentials to access the portal.';
+      } else {
+        credentialsForm.classList.add('hidden');
+        changePasswordForm.classList.remove('hidden');
+        changePill.classList.remove('hidden');
+        title.textContent = 'Security: Set Your Individual Password';
+        subtitle.textContent = `Create a private password for ${currentLoginUser}.`;
+        document.getElementById('login-new-password').value = '';
+        document.getElementById('login-confirm-password').value = '';
+        document.getElementById('login-new-password').focus();
+      }
+    }
+
+    function showLoginError(msg) {
+      const alertBox = document.getElementById('login-error-alert');
+      const text = document.getElementById('login-error-text');
+      text.textContent = msg;
+      alertBox.classList.remove('hidden');
+    }
+
     function openLoginModal(role) {
       selectedRole = role;
+      userAccounts = getUserAccountsStore();
+      switchLoginModalToStep('login');
+
       const badge = document.getElementById('login-role-badge');
       const userField = document.getElementById('login-username');
+      const passwordField = document.getElementById('login-password');
       const teacherClassGroup = document.getElementById('teacher-class-field');
 
       if (role === 'admin') {
@@ -863,6 +987,10 @@
         teacherClassGroup.classList.add('hidden');
       }
 
+      const email = userField.value.trim().toLowerCase();
+      const userObj = userAccounts[email];
+      passwordField.value = (userObj && !userObj.mustChange) ? '' : DEFAULT_GENERIC_PASSWORD;
+
       document.getElementById('login-modal').classList.remove('hidden');
     }
 
@@ -872,6 +1000,76 @@
 
     function handleLoginSubmit(e) {
       e.preventDefault();
+      const userField = document.getElementById('login-username');
+      const passwordField = document.getElementById('login-password');
+      const email = userField.value.trim().toLowerCase();
+      const enteredPassword = passwordField.value;
+
+      currentLoginUser = email;
+      userAccounts = getUserAccountsStore();
+
+      let user = userAccounts[email];
+      if (!user) {
+        // User not yet registered, assume generic password with change required
+        if (enteredPassword === DEFAULT_GENERIC_PASSWORD) {
+          user = { role: selectedRole, password: DEFAULT_GENERIC_PASSWORD, mustChange: true };
+          userAccounts[email] = user;
+          saveUserAccountsStore(userAccounts);
+        } else {
+          showLoginError('Invalid password. Default generic password is 1234567890.');
+          return;
+        }
+      }
+
+      if (user.password !== enteredPassword) {
+        showLoginError('Incorrect password. Please enter your valid credentials.');
+        return;
+      }
+
+      if (user.mustChange) {
+        // Direct to change password screen
+        switchLoginModalToStep('change-password');
+        return;
+      }
+
+      // Password already changed, proceed to log in
+      proceedToPortal();
+    }
+
+    function handlePasswordChangeSubmit(e) {
+      e.preventDefault();
+      const newPass = document.getElementById('login-new-password').value;
+      const confirmPass = document.getElementById('login-confirm-password').value;
+
+      if (newPass.length < 6) {
+        showLoginError('New password must be at least 6 characters long.');
+        return;
+      }
+
+      if (newPass === DEFAULT_GENERIC_PASSWORD) {
+        showLoginError('You cannot reuse the generic default password. Please choose a custom password.');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        showLoginError('Passwords do not match. Please re-enter.');
+        return;
+      }
+
+      // Save individual user password
+      userAccounts = getUserAccountsStore();
+      userAccounts[currentLoginUser] = {
+        role: selectedRole,
+        password: newPass,
+        mustChange: false
+      };
+      saveUserAccountsStore(userAccounts);
+
+      alert(`Personal password updated successfully for ${currentLoginUser}! You are now entering your portal.`);
+      proceedToPortal();
+    }
+
+    function proceedToPortal() {
       closeLoginModal();
 
       document.querySelectorAll('.portal-view').forEach(el => el.classList.add('hidden'));

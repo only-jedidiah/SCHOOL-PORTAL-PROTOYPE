@@ -76,3 +76,11 @@ export interface ToastMessage {
   title: string;
   message?: string;
 }
+
+export interface UserCredential {
+  email: string;
+  role: UserRole;
+  password: string;
+  mustChangePassword: boolean;
+}
+
